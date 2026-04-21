@@ -630,9 +630,9 @@ textarea.ac-input {
 .oc-actions {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
 }
 .btn-done {
-  flex: 1;
   padding: 9px;
   border-radius: 10px;
   border: none;
@@ -646,7 +646,6 @@ textarea.ac-input {
 }
 .btn-done:hover { background: #C8E6C9; }
 .btn-reopen {
-  flex: 1;
   padding: 9px;
   border-radius: 10px;
   border: none;
@@ -1375,16 +1374,31 @@ function buildCard(order, day) {
       <div class="oc-products">${prods}</div>
       ${incHtml}
       ${notasHtml}
-      <div class="oc-actions">
-        ${order.done
-          ? '<button class="btn-reopen" data-id="'+order.id+'" onclick="doUpdate(this.dataset.id,{done:false})">↩ Reabrir</button>'
-          : '<button class="btn-done" data-id="'+order.id+'" onclick="doUpdate(this.dataset.id,{done:true})">✓ Completado</button>'
-        }
-        <button class="btn-edit" data-id="${order.id}" onclick="openEditModal(this.dataset.id)">✏️ Modificar</button>
-        <button class="btn-del" data-id="${order.id}" onclick="doDelete(this.dataset.id)" title="Eliminar">🗑</button>
-      </div>
+      <div class="oc-actions" id="actions-${order.id}"></div>
     </div>
   `;
+  // Add action buttons safely (avoids quote escaping issues)
+  const actionsDiv = div.querySelector('.oc-actions');
+
+  const mainBtn = document.createElement('button');
+  mainBtn.className = order.done ? 'btn-reopen' : 'btn-done';
+  mainBtn.textContent = order.done ? '↩ Reabrir' : '✓ Completado';
+  mainBtn.addEventListener('click', () => doUpdate(order.id, {done: !order.done}));
+  actionsDiv.appendChild(mainBtn);
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'btn-edit';
+  editBtn.textContent = '✏️ Modificar';
+  editBtn.addEventListener('click', () => openEditModal(order.id));
+  actionsDiv.appendChild(editBtn);
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'btn-del';
+  delBtn.textContent = '🗑';
+  delBtn.title = 'Eliminar';
+  delBtn.addEventListener('click', () => doDelete(order.id));
+  actionsDiv.appendChild(delBtn);
+
   return div;
 }
 

@@ -1363,10 +1363,6 @@ function buildCard(order, day) {
 
   const notasHtml = order.notas ? `<div class="oc-notas">${order.notas}</div>` : '';
 
-  const actions = order.done
-    ? `<button class="btn-reopen" onclick="doUpdate('${order.id}',{done:false})">↩ Reabrir</button>`
-    : `<button class="btn-done" onclick="doUpdate('${order.id}',{done:true})">✓ Completado</button>`;
-
   div.innerHTML = `
     <div class="oc-stripe"></div>
     <div class="oc-body">
@@ -1380,9 +1376,12 @@ function buildCard(order, day) {
       ${incHtml}
       ${notasHtml}
       <div class="oc-actions">
-        ${actions}
-        <button class="btn-edit" onclick="openEditModal('${order.id}')" title="Modificar">✏️ Modificar</button>
-        <button class="btn-del" onclick="doDelete('${order.id}')" title="Eliminar">🗑</button>
+        ${order.done
+          ? '<button class="btn-reopen" data-id="'+order.id+'" onclick="doUpdate(this.dataset.id,{done:false})">↩ Reabrir</button>'
+          : '<button class="btn-done" data-id="'+order.id+'" onclick="doUpdate(this.dataset.id,{done:true})">✓ Completado</button>'
+        }
+        <button class="btn-edit" data-id="${order.id}" onclick="openEditModal(this.dataset.id)">✏️ Modificar</button>
+        <button class="btn-del" data-id="${order.id}" onclick="doDelete(this.dataset.id)" title="Eliminar">🗑</button>
       </div>
     </div>
   `;

@@ -1,4 +1,5 @@
 <!DOCTYPE html><!-- v8 -->
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -6,12 +7,100 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Pedidos Capricho v9</title>
+<title>Pedidos Capricho</title>
+
+<!-- PWA -->
+
+<meta name="application-name" content="Pedidos Capricho">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Capricho">
+<meta name="theme-color" content="#1A1A2E">
+<link rel="manifest" id="pwa-manifest">
+
+<!-- Icon inline (iOS + Android) -->
+
+<link rel="apple-touch-icon" id="pwa-icon">
+<link rel="icon" type="image/png" id="pwa-favicon">
+
+<script>
+// Generate icon as canvas and inject
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512; canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, 512, 512);
+  grad.addColorStop(0, '#1A1A2E');
+  grad.addColorStop(1, '#16213E');
+  ctx.fillStyle = grad;
+  roundRect(ctx, 0, 0, 512, 512, 80);
+  ctx.fill();
+
+  // Orange circle accent
+  ctx.fillStyle = '#FF5722';
+  ctx.beginPath();
+  ctx.arc(380, 140, 60, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Letter C
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 300px Helvetica';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('C', 240, 270);
+
+  // Small dot on C
+  ctx.fillStyle = '#FF5722';
+  ctx.beginPath();
+  ctx.arc(370, 200, 28, 0, Math.PI * 2);
+  ctx.fill();
+
+  const dataUrl = canvas.toDataURL('image/png');
+  document.getElementById('pwa-icon').href = dataUrl;
+  document.getElementById('pwa-favicon').href = dataUrl;
+
+  // Inject manifest
+  const manifest = {
+    name: "Pedidos Capricho",
+    short_name: "Capricho",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#1A1A2E",
+    theme_color: "#1A1A2E",
+    orientation: "portrait-primary",
+    icons: [
+      { src: dataUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+  document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
+});
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+</script>
+
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK (compat version - works on all mobile browsers) -->
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCpOkNUimkCbvS5IxykQnBiLdCAfcbFuAk",
@@ -810,10 +899,12 @@ textarea.ac-input {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 </style>
+
 </head>
 <body>
 
 <!-- Firebase Setup Modal -->
+
 <div class="modal-overlay" id="firebase-modal">
   <div class="modal">
     <h2>🔥 Configura Firebase</h2>
@@ -830,6 +921,7 @@ textarea.ac-input {
 </div>
 
 <!-- EDIT MODAL -->
+
 <div class="modal-overlay hidden" id="edit-modal">
   <div class="modal" style="max-height:90vh;overflow-y:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
@@ -838,14 +930,17 @@ textarea.ac-input {
     </div>
     <div id="edit-empresa-label" style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85rem;color:#FF5722;margin-bottom:12px;padding:8px 12px;background:#FFF3EF;border-radius:8px"></div>
 
-    <div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
-    <div id="edit-products-list" style="margin-bottom:8px"></div>
-    <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
+```
+<div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
+<div id="edit-products-list" style="margin-bottom:8px"></div>
+<button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
 
-    <div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
-    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
+<div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
+<textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
 
-    <button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
+<button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
+```
+
   </div>
 </div>
 
@@ -863,65 +958,70 @@ textarea.ac-input {
 </div>
 
 <!-- ══════════ FORMULARIO ══════════ -->
+
 <div class="view active" id="view-form">
   <div class="form-wrap">
 
-    <!-- Cliente -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">🏢</span>Cliente</div>
-      <div class="autocomplete-wrap">
-        <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
-          oninput="acFilter(this,'ac-clientes','clientes')"
-          onkeydown="acKey(event,'ac-clientes')"
-          onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
-        <div class="ac-dropdown" id="ac-clientes"></div>
-      </div>
-    </div>
+```
+<!-- Cliente -->
+<div class="section-card">
+  <div class="section-title"><span class="icon">🏢</span>Cliente</div>
+  <div class="autocomplete-wrap">
+    <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
+      oninput="acFilter(this,'ac-clientes','clientes')"
+      onkeydown="acKey(event,'ac-clientes')"
+      onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
+    <div class="ac-dropdown" id="ac-clientes"></div>
+  </div>
+</div>
 
-    <!-- Productos -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
-      <div id="products-list"></div>
-      <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
-    </div>
+<!-- Productos -->
+<div class="section-card">
+  <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
+  <div id="products-list"></div>
+  <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
+</div>
 
-    <!-- Día de entrega -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
-      <div class="days-grid" id="days-grid">
-        <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
-        <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
-        <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
-        <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
-        <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
-      </div>
-    </div>
+<!-- Día de entrega -->
+<div class="section-card">
+  <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
+  <div class="days-grid" id="days-grid">
+    <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
+    <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
+    <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
+    <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
+    <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
+  </div>
+</div>
 
-    <!-- Incidencia -->
-    <div class="section-card">
-      <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
-        <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
-        <span class="arrow">▾</span>
-      </div>
-      <div class="incidencia-body" id="inc-body">
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;font-weight:600;">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
-        <div id="inc-lines"></div>
-        <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
-      </div>
-    </div>
+<!-- Incidencia -->
+<div class="section-card">
+  <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
+    <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
+    <span class="arrow">▾</span>
+  </div>
+  <div class="incidencia-body" id="inc-body">
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;font-weight:600;">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
+    <div id="inc-lines"></div>
+    <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
+  </div>
+</div>
 
-    <!-- Notas -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
-      <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3"></textarea>
-    </div>
+<!-- Notas -->
+<div class="section-card">
+  <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
+  <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3"></textarea>
+</div>
 
-    <div style="height:80px"></div>
+<div style="height:80px"></div>
+```
+
   </div>
   <button class="btn-submit" id="btn-submit" onclick="submitOrder()">Enviar pedido →</button>
 </div>
 
 <!-- ══════════ PANEL SEMANAL ══════════ -->
+
 <div class="view" id="view-panel">
   <div class="panel-wrap">
     <div class="panel-search-bar">
@@ -1746,5 +1846,6 @@ function toast(msg) {
 addProductLine();
 document.getElementById('firebase-modal').classList.add('hidden');
 </script>
+
 </body>
 </html>

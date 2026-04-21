@@ -1191,22 +1191,26 @@ function addIncLine() {
   const id = ++incLineCount;
   const div = document.createElement('div');
   div.id = 'inc-' + id;
+  div.style.cssText = 'background:#FFFBF0;border:1px solid #FFE082;border-radius:12px;padding:12px;margin-bottom:10px';
   div.innerHTML = `
-    <div class="inc-producto-row">
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px">
       <div class="product-ac-wrap" style="flex:1">
-        <input class="ac-input" style="background:white" type="text" placeholder="Producto con incidencia…" autocomplete="off"
+        <input class="ac-input" style="background:white;font-size:0.9rem" type="text" placeholder="Producto con incidencia…" autocomplete="off"
           oninput="acFilter(this,'ac-inc-${id}','productos')"
           onkeydown="acKey(event,'ac-inc-${id}')"
           onblur="setTimeout(()=>closeAc('ac-inc-${id}'),200)">
         <div class="ac-dropdown" id="ac-inc-${id}"></div>
       </div>
+      <div class="qty-box" style="border-color:#FFE082">
+        <button class="qty-btn" onclick="changeQty('inc-qty-${id}',-1)">−</button>
+        <input class="qty-input" id="inc-qty-${id}" type="number" value="1" min="1">
+        <button class="qty-btn" onclick="changeQty('inc-qty-${id}',1)">+</button>
+      </div>
       <button class="btn-remove-line" onclick="document.getElementById('inc-${id}').remove()">✕</button>
     </div>
-    <div style="margin-left:4px;margin-bottom:12px">
-      <div style="font-size:.78rem;font-weight:700;color:#E65100;margin-bottom:6px">¿Cuándo se hará el reparto?</div>
-      <div class="inc-day-pills">
-        ${DAYS.map(d => `<button class="inc-day-pill" data-iid="${id}" data-day="${d}" onclick="selIncDay(this)">${d}</button>`).join('')}
-      </div>
+    <div style="font-size:.78rem;font-weight:800;color:#E65100;margin-bottom:8px">¿Cuándo se hará el reparto alternativo?</div>
+    <div class="inc-day-pills" style="display:flex;gap:6px;flex-wrap:wrap">
+      ${DAYS.map(d => `<button class="inc-day-pill" data-iid="${id}" data-day="${d}" onclick="selIncDay(this)">${d}</button>`).join('')}
     </div>
   `;
   document.getElementById('inc-lines').appendChild(div);
@@ -1243,8 +1247,9 @@ async function submitOrder() {
     const incLines = document.querySelectorAll('#inc-lines > div');
     incLines.forEach(line => {
       const prod = line.querySelector('input[type="text"]')?.value.trim();
+      const qty = parseInt(line.querySelector('input[type="number"]')?.value || 1);
       const dayBtn = line.querySelector('.inc-day-pill.sel');
-      if (prod) incidencias.push({ producto: prod, cuando: dayBtn ? dayBtn.dataset.day : '—' });
+      if (prod) incidencias.push({ producto: prod, qty: qty, cuando: dayBtn ? dayBtn.dataset.day : '—' });
     });
   }
 
@@ -1271,7 +1276,7 @@ async function submitOrder() {
     if (inc.cuando && inc.cuando !== '—') {
       const incOrder = {
         empresa: order.empresa,
-        products: [{ name: inc.producto, qty: 1 }],
+        products: [{ name: inc.producto, qty: inc.qty || 1 }],
         incidencias: [],
         notas: '⚠️ Incidencia reprogramada desde ' + DAY_LABELS[order.day],
         day: inc.cuando,
@@ -1377,7 +1382,7 @@ function buildCard(order, day) {
     <div class="oc-incidencia">
       <div class="oc-inc-title">⚠️ Incidencia</div>
       ${order.incidencias.map(i => `
-        <div class="oc-inc-prod">${i.producto}</div>
+        <div class="oc-inc-prod">${i.producto} <span style="background:#FFE082;border-radius:6px;padding:1px 6px;font-size:0.75rem;font-weight:900">×${i.qty||1}</span></div>
         <div class="oc-inc-day">Reparto alternativo: ${i.cuando !== '—' ? DAY_LABELS[i.cuando] || i.cuando : 'Sin especificar'}</div>
       `).join('')}
     </div>` : '';

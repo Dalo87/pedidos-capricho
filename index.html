@@ -1189,30 +1189,97 @@ function toggleInc() {
 
 function addIncLine() {
   const id = ++incLineCount;
+
   const div = document.createElement('div');
   div.id = 'inc-' + id;
   div.style.cssText = 'background:#FFFBF0;border:1px solid #FFE082;border-radius:12px;padding:12px;margin-bottom:10px';
-  div.innerHTML = `
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px">
-      <div class="product-ac-wrap" style="flex:1">
-        <input class="ac-input" style="background:white;font-size:0.9rem" type="text" placeholder="Producto con incidencia…" autocomplete="off"
-          oninput="acFilter(this,'ac-inc-${id}','productos')"
-          onkeydown="acKey(event,'ac-inc-${id}')"
-          onblur="setTimeout(()=>closeAc('ac-inc-${id}'),200)">
-        <div class="ac-dropdown" id="ac-inc-${id}"></div>
-      </div>
-      <div class="qty-box" style="border-color:#FFE082">
-        <button class="qty-btn" onclick="changeQty('inc-qty-${id}',-1)">−</button>
-        <input class="qty-input" id="inc-qty-${id}" type="number" value="1" min="1">
-        <button class="qty-btn" onclick="changeQty('inc-qty-${id}',1)">+</button>
-      </div>
-      <button class="btn-remove-line" onclick="document.getElementById('inc-${id}').remove()">✕</button>
-    </div>
-    <div style="font-size:.78rem;font-weight:800;color:#E65100;margin-bottom:8px">¿Cuándo se hará el reparto alternativo?</div>
-    <div class="inc-day-pills" style="display:flex;gap:6px;flex-wrap:wrap">
-      ${DAYS.map(d => `<button class="inc-day-pill" data-iid="${id}" data-day="${d}" onclick="selIncDay(this)">${d}</button>`).join('')}
-    </div>
-  `;
+
+  // Top row: product input + qty + remove
+  const topRow = document.createElement('div');
+  topRow.style.cssText = 'display:flex;gap:8px;align-items:flex-start;margin-bottom:10px';
+
+  // Product autocomplete
+  const acWrap = document.createElement('div');
+  acWrap.className = 'product-ac-wrap';
+  acWrap.style.flex = '1';
+
+  const acInput = document.createElement('input');
+  acInput.className = 'ac-input';
+  acInput.type = 'text';
+  acInput.placeholder = 'Producto con incidencia…';
+  acInput.autocomplete = 'off';
+  acInput.style.cssText = 'background:white;font-size:0.9rem';
+  acInput.addEventListener('input', () => acFilter(acInput, 'ac-inc-' + id, 'productos'));
+  acInput.addEventListener('keydown', (e) => acKey(e, 'ac-inc-' + id));
+  acInput.addEventListener('blur', () => setTimeout(() => closeAc('ac-inc-' + id), 200));
+
+  const acDrop = document.createElement('div');
+  acDrop.className = 'ac-dropdown';
+  acDrop.id = 'ac-inc-' + id;
+
+  acWrap.appendChild(acInput);
+  acWrap.appendChild(acDrop);
+
+  // Qty box
+  const qtyBox = document.createElement('div');
+  qtyBox.className = 'qty-box';
+  qtyBox.style.borderColor = '#FFE082';
+
+  const qtyInput = document.createElement('input');
+  qtyInput.className = 'qty-input';
+  qtyInput.id = 'inc-qty-' + id;
+  qtyInput.type = 'number';
+  qtyInput.value = '1';
+  qtyInput.min = '1';
+
+  const btnMinus = document.createElement('button');
+  btnMinus.className = 'qty-btn';
+  btnMinus.textContent = '−';
+  btnMinus.addEventListener('click', () => changeQty('inc-qty-' + id, -1));
+
+  const btnPlus = document.createElement('button');
+  btnPlus.className = 'qty-btn';
+  btnPlus.textContent = '+';
+  btnPlus.addEventListener('click', () => changeQty('inc-qty-' + id, 1));
+
+  qtyBox.appendChild(btnMinus);
+  qtyBox.appendChild(qtyInput);
+  qtyBox.appendChild(btnPlus);
+
+  // Remove button
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'btn-remove-line';
+  removeBtn.textContent = '✕';
+  removeBtn.addEventListener('click', () => div.remove());
+
+  topRow.appendChild(acWrap);
+  topRow.appendChild(qtyBox);
+  topRow.appendChild(removeBtn);
+
+  // Day label
+  const dayLabel = document.createElement('div');
+  dayLabel.style.cssText = 'font-size:.78rem;font-weight:800;color:#E65100;margin-bottom:8px';
+  dayLabel.textContent = '¿Cuándo se hará el reparto alternativo?';
+
+  // Day pills
+  const pillsWrap = document.createElement('div');
+  pillsWrap.className = 'inc-day-pills';
+  pillsWrap.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap';
+
+  DAYS.forEach(d => {
+    const pill = document.createElement('button');
+    pill.className = 'inc-day-pill';
+    pill.dataset.iid = id;
+    pill.dataset.day = d;
+    pill.textContent = d;
+    pill.addEventListener('click', () => selIncDay(pill));
+    pillsWrap.appendChild(pill);
+  });
+
+  div.appendChild(topRow);
+  div.appendChild(dayLabel);
+  div.appendChild(pillsWrap);
+
   document.getElementById('inc-lines').appendChild(div);
 }
 

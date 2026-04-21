@@ -460,6 +460,22 @@ textarea.ac-input {
   font-size: 1rem;
   pointer-events: none;
 }
+.day-filter-btn {
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: 2px solid var(--border);
+  background: white;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all .2s;
+  white-space: nowrap;
+}
+.day-filter-btn:hover { border-color: var(--orange); color: var(--orange); }
+.day-filter-btn.active { background: var(--orange); border-color: var(--orange); color: white; }
+
 .btn-clear-done {
   padding: 12px 16px;
   border-radius: var(--r-sm);
@@ -915,12 +931,30 @@ textarea.ac-input {
         <span class="search-icon">🔍</span>
         <input type="text" placeholder="Buscar cliente, producto…" id="panel-search" oninput="filterPanel(this.value)">
       </div>
-      <button class="btn-clear-done" onclick="clearDone()">🗑 Limpiar completados</button>
+      <button class="btn-clear-done" onclick="clearDone()">🗑 Limpiar</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+      <span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
+      <button class="day-filter-btn active" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
+      <button class="day-filter-btn" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
+      <button class="day-filter-btn" data-day="LUN" onclick="setDayFilter(this)">Lun</button>
+      <button class="day-filter-btn" data-day="MAR" onclick="setDayFilter(this)">Mar</button>
+      <button class="day-filter-btn" data-day="MIE" onclick="setDayFilter(this)">Mié</button>
+      <button class="day-filter-btn" data-day="JUE" onclick="setDayFilter(this)">Jue</button>
+      <button class="day-filter-btn" data-day="VIE" onclick="setDayFilter(this)">Vie</button>
     </div>
     <div class="week-grid" id="week-grid"></div>
-    <div class="done-section" id="done-section" style="display:none">
-      <div class="done-section-title">✓ Completados</div>
-      <div class="done-grid" id="done-grid"></div>
+    <div id="done-section" style="display:none;margin-top:20px">
+      <button onclick="toggleDoneDrawer()" id="done-toggle-btn"
+        style="width:100%;padding:12px 18px;background:white;border:2px solid var(--border);border-radius:12px;
+               font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8rem;color:var(--muted);
+               cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s">
+        <span>✓ Completados — <span id="done-count">0</span> pedido(s)</span>
+        <span id="done-arrow">▾</span>
+      </button>
+      <div id="done-drawer" style="display:none;margin-top:10px">
+        <div class="done-grid" id="done-grid"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -944,6 +978,7 @@ const DAY_LABELS = { LUN:'Lunes', MAR:'Martes', MIE:'Miércoles', JUE:'Jueves', 
 let selectedDay = null;
 let useFirebase = false;
 let allOrders = {};
+let activeDayFilter = 'AUTO'; // AUTO = next working day, ALL = full week, or specific day
 
 // ══════════════════════════════════════════════════
 // FIREBASE INIT
@@ -1377,6 +1412,29 @@ async function submitOrder() {
 // ══════════════════════════════════════════════════
 // PANEL
 // ══════════════════════════════════════════════════
+function getNextWorkDay() {
+  // Returns the next working day key (LUN-VIE)
+  // If today is Fri/Sat/Sun → Monday; otherwise tomorrow
+  const jsDay = new Date().getDay(); // 0=Sun,1=Mon,...,6=Sat
+  const map = { 0:'LUN', 1:'MAR', 2:'MIE', 3:'JUE', 4:'VIE', 5:'LUN', 6:'LUN' };
+  // next day
+  const nextJs = jsDay === 5 || jsDay === 6 || jsDay === 0 ? 1 : jsDay + 1;
+  return map[nextJs === 7 ? 1 : nextJs];
+}
+
+function getVisibleDays() {
+  if (activeDayFilter === 'ALL') return DAYS;
+  if (activeDayFilter === 'AUTO') return [getNextWorkDay()];
+  return [activeDayFilter];
+}
+
+function setDayFilter(btn) {
+  activeDayFilter = btn.dataset.day;
+  document.querySelectorAll('.day-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPanel(document.getElementById('panel-search').value);
+}
+
 function renderPanel(filter = '') {
   const orders = Object.entries(allOrders).map(([id, o]) => ({...o, id}));
   const q = filter.toLowerCase();
@@ -1387,7 +1445,9 @@ function renderPanel(filter = '') {
   const grid = document.getElementById('week-grid');
   grid.innerHTML = '';
 
-  DAYS.forEach(day => {
+  const visibleDays = getVisibleDays();
+
+  visibleDays.forEach(day => {
     const col = document.createElement('div');
     col.className = `day-col col-${day}`;
 
@@ -1411,9 +1471,11 @@ function renderPanel(filter = '') {
   // Done
   const doneSection = document.getElementById('done-section');
   const doneGrid = document.getElementById('done-grid');
+  const doneCount = document.getElementById('done-count');
   doneGrid.innerHTML = '';
   if (done.length) {
     doneSection.style.display = 'block';
+    doneCount.textContent = done.length;
     done.forEach(o => {
       const wrap = document.createElement('div');
       wrap.className = 'day-col col-' + o.day;
@@ -1423,6 +1485,17 @@ function renderPanel(filter = '') {
   } else {
     doneSection.style.display = 'none';
   }
+}
+
+function toggleDoneDrawer() {
+  const drawer = document.getElementById('done-drawer');
+  const arrow = document.getElementById('done-arrow');
+  const btn = document.getElementById('done-toggle-btn');
+  const isOpen = drawer.style.display !== 'none';
+  drawer.style.display = isOpen ? 'none' : 'block';
+  arrow.textContent = isOpen ? '▾' : '▴';
+  btn.style.borderColor = isOpen ? 'var(--border)' : 'var(--teal)';
+  btn.style.color = isOpen ? 'var(--muted)' : 'var(--teal)';
 }
 
 function matchesFilter(o, q) {

@@ -929,8 +929,8 @@ textarea.ac-input {
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
       <span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
-      <button class="day-filter-btn active" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
-      <button class="day-filter-btn" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
+      <button class="day-filter-btn active" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
+      <button class="day-filter-btn" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
       <button class="day-filter-btn" data-day="LUN" onclick="setDayFilter(this)">Lun</button>
       <button class="day-filter-btn" data-day="MAR" onclick="setDayFilter(this)">Mar</button>
       <button class="day-filter-btn" data-day="MIE" onclick="setDayFilter(this)">Mié</button>
@@ -972,7 +972,7 @@ const DAY_LABELS = { LUN:'Lunes', MAR:'Martes', MIE:'Miércoles', JUE:'Jueves', 
 let selectedDay = null;
 let useFirebase = false;
 let allOrders = {};
-let activeDayFilter = 'AUTO'; // AUTO = next working day, ALL = full week, or specific day
+let activeDayFilter = 'ALL'; // AUTO = next working day, ALL = full week, or specific day
 
 // ══════════════════════════════════════════════════
 // FIREBASE INIT
@@ -1462,7 +1462,7 @@ function renderPanel(filter = '') {
     grid.appendChild(col);
   });
 
-  // Done
+  // Done - compact cards
   const doneSection = document.getElementById('done-section');
   const doneGrid = document.getElementById('done-grid');
   const doneCount = document.getElementById('done-count');
@@ -1471,10 +1471,21 @@ function renderPanel(filter = '') {
     doneSection.style.display = 'block';
     doneCount.textContent = done.length;
     done.forEach(o => {
-      const wrap = document.createElement('div');
-      wrap.className = 'day-col col-' + o.day;
-      wrap.appendChild(buildCard(o, o.day));
-      doneGrid.appendChild(wrap);
+      const card = document.createElement('div');
+      card.style.cssText = 'background:white;border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;min-width:160px;max-width:220px;flex:1';
+      card.onmouseenter = () => { card.style.borderColor = 'var(--orange)'; card.style.transform = 'translateY(-2px)'; };
+      card.onmouseleave = () => { card.style.borderColor = 'var(--border)'; card.style.transform = 'none'; };
+      card.onclick = () => openDetail(o.id);
+
+      const dayColors = {LUN:'#5C6BC0',MAR:'#26A69A',MIE:'#FFA726',JUE:'#EC407A',VIE:'#66BB6A'};
+      const color = dayColors[o.day] || '#9E9E9E';
+
+      card.innerHTML = `
+        <div style="font-size:0.65rem;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">${DAY_LABELS[o.day] || o.day} · ${o.date}</div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text);line-height:1.3;margin-bottom:4px">${o.empresa}</div>
+        <div style="font-size:0.72rem;color:var(--muted);font-weight:600">${(o.products||[]).length} producto(s)</div>
+      `;
+      doneGrid.appendChild(card);
     });
   } else {
     doneSection.style.display = 'none';
@@ -1490,6 +1501,58 @@ function toggleDoneDrawer() {
   arrow.textContent = isOpen ? '▾' : '▴';
   btn.style.borderColor = isOpen ? 'var(--border)' : 'var(--teal)';
   btn.style.color = isOpen ? 'var(--muted)' : 'var(--teal)';
+}
+
+let detailId = null;
+
+function openDetail(id) {
+  const o = allOrders[id];
+  if (!o) return;
+  detailId = id;
+  const dayColors = {LUN:'#5C6BC0',MAR:'#26A69A',MIE:'#FFA726',JUE:'#EC407A',VIE:'#66BB6A'};
+  const color = dayColors[o.day] || '#9E9E9E';
+
+  document.getElementById('detail-title').innerHTML =
+    '<span style="color:'+color+'">' + (DAY_LABELS[o.day]||o.day) + '</span> · ' + o.empresa;
+
+  const prods = (o.products||[]).map(p =>
+    '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F5F5F0;font-size:0.85rem">' +
+    '<span style="font-weight:600">' + p.name + '</span>' +
+    '<span style="font-family:Montserrat,sans-serif;font-weight:900;color:#FF5722;background:#FFF3EF;border-radius:6px;padding:1px 8px">×' + p.qty + '</span>' +
+    '</div>'
+  ).join('');
+
+  const incHtml = (o.incidencias||[]).length ? '<div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:10px;margin-top:10px"><div style="font-size:0.7rem;font-weight:800;color:#E65100;margin-bottom:6px">⚠️ INCIDENCIA</div>' +
+    o.incidencias.map(i => '<div style="font-size:0.83rem;font-weight:600">' + i.producto + ' ×' + (i.qty||1) + '</div><div style="font-size:0.72rem;color:#9E9E9E">Reparto: ' + (DAY_LABELS[i.cuando]||i.cuando) + '</div>').join('') + '</div>' : '';
+
+  const notasHtml = o.notas ? '<div style="margin-top:10px;padding:8px 10px;background:#F5F5F0;border-radius:8px;font-size:0.82rem;color:#9E9E9E;font-style:italic">' + o.notas + '</div>' : '';
+
+  const dateHtml = '<div style="font-size:0.72rem;color:#9E9E9E;margin-bottom:12px">Pedido el ' + o.date + ' a las ' + o.ts + '</div>';
+
+  document.getElementById('detail-body').innerHTML = dateHtml + prods + incHtml + notasHtml;
+  document.getElementById('detail-overlay').style.display = 'flex';
+}
+
+function closeDetail(e) {
+  if (e.target === document.getElementById('detail-overlay')) {
+    document.getElementById('detail-overlay').style.display = 'none';
+  }
+}
+
+async function reopenFromDetail() {
+  if (!detailId) return;
+  await updateOrder(detailId, { done: false });
+  document.getElementById('detail-overlay').style.display = 'none';
+  if (!useFirebase) renderPanel();
+  toast('↩ Pedido reabierto');
+}
+
+async function deleteFromDetail() {
+  if (!detailId) return;
+  if (!confirm('¿Eliminar este pedido del historial?')) return;
+  await deleteOrder(detailId);
+  document.getElementById('detail-overlay').style.display = 'none';
+  toast('🗑 Pedido eliminado');
 }
 
 function matchesFilter(o, q) {

@@ -779,6 +779,20 @@ textarea.ac-input {
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+.btn-edit {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: none;
+  background: #E3F2FD;
+  color: #1565C0;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-edit:hover { background: #BBDEFB; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
@@ -799,6 +813,26 @@ textarea.ac-input {
     </ol>
     <button class="btn-submit" style="position:static;width:100%;transform:none;max-width:none" onclick="closeModal()">Ya lo configuré → Usar app</button>
     <button class="btn-local" onclick="useLocal()">Usar sin Firebase (solo local)</button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay hidden" id="edit-modal">
+  <div class="modal" style="max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h2 style="font-size:1.1rem">✏️ Modificar pedido</h2>
+      <button onclick="closeEditModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9E9E9E;line-height:1">×</button>
+    </div>
+    <div id="edit-empresa-label" style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85rem;color:#FF5722;margin-bottom:12px;padding:8px 12px;background:#FFF3EF;border-radius:8px"></div>
+
+    <div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
+    <div id="edit-products-list" style="margin-bottom:8px"></div>
+    <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
+
+    <div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
+    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
+
+    <button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
   </div>
 </div>
 
@@ -1347,11 +1381,81 @@ function buildCard(order, day) {
       ${notasHtml}
       <div class="oc-actions">
         ${actions}
+        <button class="btn-edit" onclick="openEditModal('${order.id}')" title="Modificar">✏️ Modificar</button>
         <button class="btn-del" onclick="doDelete('${order.id}')" title="Eliminar">🗑</button>
       </div>
     </div>
   `;
   return div;
+}
+
+// ══════════════════════════════════════════════════
+// EDIT MODAL
+// ══════════════════════════════════════════════════
+let editingId = null;
+let editLineCount = 0;
+
+function openEditModal(id) {
+  const order = allOrders[id];
+  if (!order) return;
+  editingId = id;
+
+  document.getElementById('edit-empresa-label').textContent = order.empresa;
+  document.getElementById('edit-notas').value = order.notas || '';
+
+  const list = document.getElementById('edit-products-list');
+  list.innerHTML = '';
+  editLineCount = 0;
+
+  (order.products || []).forEach(p => addEditProductLine(p.name, p.qty));
+  if (!order.products || !order.products.length) addEditProductLine();
+
+  document.getElementById('edit-modal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.add('hidden');
+  editingId = null;
+}
+
+function addEditProductLine(name = '', qty = 1) {
+  const id = ++editLineCount;
+  const div = document.createElement('div');
+  div.className = 'product-line';
+  div.id = 'epl-' + id;
+  div.innerHTML = `
+    <div class="product-ac-wrap">
+      <input class="ac-input" type="text" placeholder="Busca el producto…" value="${name}" autocomplete="off"
+        oninput="acFilter(this,'ac-eprod-${id}','productos')"
+        onkeydown="acKey(event,'ac-eprod-${id}')"
+        onblur="setTimeout(()=>closeAc('ac-eprod-${id}'),200)">
+      <div class="ac-dropdown" id="ac-eprod-${id}"></div>
+    </div>
+    <div class="qty-box">
+      <button class="qty-btn" onclick="changeQty('eqty-${id}',-1)">−</button>
+      <input class="qty-input" id="eqty-${id}" type="number" value="${qty}" min="1">
+      <button class="qty-btn" onclick="changeQty('eqty-${id}',1)">+</button>
+    </div>
+    <button class="btn-remove-line" onclick="document.getElementById('epl-${id}').remove()">✕</button>
+  `;
+  document.getElementById('edit-products-list').appendChild(div);
+}
+
+async function saveEdit() {
+  if (!editingId) return;
+  const lines = [...document.querySelectorAll('#edit-products-list .product-line')];
+  const products = [];
+  lines.forEach(line => {
+    const n = line.querySelector('input[type="text"]')?.value.trim();
+    const q = parseInt(line.querySelector('input[type="number"]')?.value || 1);
+    if (n) products.push({ name: n, qty: q });
+  });
+  if (!products.length) return toast('⚠️ Añade al menos un producto');
+  const notas = document.getElementById('edit-notas').value.trim();
+  await updateOrder(editingId, { products, notas });
+  closeEditModal();
+  toast('✓ Pedido actualizado');
+  if (!useFirebase) renderPanel();
 }
 
 async function doUpdate(id, changes) {

@@ -1266,6 +1266,24 @@ async function submitOrder() {
 
   await addOrder(order);
 
+  // Crear pedidos separados por cada incidencia con día alternativo
+  for (const inc of incidencias) {
+    if (inc.cuando && inc.cuando !== '—') {
+      const incOrder = {
+        empresa: order.empresa,
+        products: [{ name: inc.producto, qty: 1 }],
+        incidencias: [],
+        notas: '⚠️ Incidencia reprogramada desde ' + DAY_LABELS[order.day],
+        day: inc.cuando,
+        done: false,
+        esIncidencia: true,
+        ts: order.ts,
+        date: order.date
+      };
+      await addOrder(incOrder);
+    }
+  }
+
   // Reset form
   document.getElementById('f-empresa').value = '';
   document.getElementById('f-notas').value = '';
@@ -1345,6 +1363,10 @@ function buildCard(order, day) {
   const div = document.createElement('div');
   div.className = 'order-card' + (order.done ? ' done' : '');
 
+  const incBadge = order.esIncidencia
+    ? `<div style="display:inline-block;background:#FFF3CD;color:#E65100;font-size:0.65rem;font-weight:800;padding:2px 8px;border-radius:99px;margin-bottom:6px;letter-spacing:.04em">⚠️ INCIDENCIA REPROGRAMADA</div>`
+    : '';
+
   const prods = (order.products || []).map(p =>
     `<div class="oc-prod-row">
       <span class="oc-prod-name">${p.name}</span>
@@ -1371,6 +1393,7 @@ function buildCard(order, day) {
           <div class="oc-time">${order.date} · ${order.ts}</div>
         </div>
       </div>
+      ${incBadge}
       <div class="oc-products">${prods}</div>
       ${incHtml}
       ${notasHtml}

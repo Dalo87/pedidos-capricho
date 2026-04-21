@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Pedidos Capricho</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Pedidos Capricho v9</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK (compat version - works on all mobile browsers) -->
@@ -34,6 +37,7 @@
       remove: (ref) => ref.remove(),
       serverTimestamp: () => firebase.database.ServerValue.TIMESTAMP
     };
+    console.log('Firebase initialized OK');
   } catch(e) {
     console.error('Firebase error:', e);
     window._firebase = { ok: false };
@@ -1027,7 +1031,7 @@ function listenOrders() {
     db.ref('pedidos').on('value', snap => {
       allOrders = snap.val() || {};
       updateBadge();
-      if (document.getElementById('view-panel').classList.contains('active')) renderPanel();
+      renderPanel(document.getElementById('panel-search').value || '');
     });
   } else {
     loadLocal();
@@ -1085,7 +1089,7 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + tab).classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'panel') renderPanel();
+  renderPanel(document.getElementById('panel-search').value || '');
 }
 
 // ══════════════════════════════════════════════════

@@ -329,25 +329,33 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 <!-- PDF Options Modal -->
 <div id="pdf-overlay" onclick="closePdfModal(event)"
   style="display:none;position:fixed;inset:0;background:rgba(17,24,39,.65);z-index:700;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)">
-  <div style="background:var(--white);border-radius:20px;padding:0;max-width:400px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden">
-    <div style="background:linear-gradient(135deg,#1E2130,#2C3148);padding:20px 22px">
-      <div style="font-size:0.68rem;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Exportar PDF</div>
-      <div style="font-weight:800;font-size:1.05rem;color:white">¿Qué quieres imprimir?</div>
+  <div style="background:var(--white);border-radius:20px;overflow:hidden;max-width:420px;width:100%;box-shadow:var(--shadow-lg)">
+    <div style="background:linear-gradient(135deg,#1E2130,#2C3148);padding:18px 22px">
+      <div style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Exportar PDF</div>
+      <div style="font-weight:800;font-size:1rem;color:white">¿Qué quieres imprimir?</div>
     </div>
-    <div style="padding:20px 22px">
-      <div id="pdf-opt-all" onclick="selectPdfOpt('all')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:10px;transition:all .2s">
-        <div style="width:40px;height:40px;border-radius:10px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🗓</div>
-        <div><div style="font-weight:800;font-size:0.92rem">Semana completa</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Todos los pedidos pendientes</div></div>
-        <div id="pdf-check-all" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem"></div>
+    <div style="padding:18px 22px">
+      <div id="pdf-opt-day" onclick="selectPdfOpt('day')"
+        style="display:flex;align-items:center;gap:12px;padding:13px 15px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:8px;transition:all .2s">
+        <div style="width:38px;height:38px;border-radius:9px;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📋</div>
+        <div>
+          <div style="font-weight:800;font-size:0.9rem">Pedidos del día</div>
+          <div style="font-size:0.76rem;color:var(--muted);margin-top:1px">Lista de pedidos por cliente</div>
+        </div>
+        <div id="pdf-check-day" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.82rem"></div>
       </div>
-      <div id="pdf-opt-day" onclick="selectPdfOpt('day')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:14px;transition:all .2s">
-        <div style="width:40px;height:40px;border-radius:10px;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📅</div>
-        <div><div style="font-weight:800;font-size:0.92rem">Un día concreto</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Elige el día que quieres imprimir</div></div>
-        <div id="pdf-check-day" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem"></div>
+      <div id="pdf-opt-summary" onclick="selectPdfOpt('summary')"
+        style="display:flex;align-items:center;gap:12px;padding:13px 15px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:14px;transition:all .2s">
+        <div style="width:38px;height:38px;border-radius:9px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📊</div>
+        <div>
+          <div style="font-weight:800;font-size:0.9rem">Resumen de productos</div>
+          <div style="font-size:0.76rem;color:var(--muted);margin-top:1px">Suma total de cada producto del día</div>
+        </div>
+        <div id="pdf-check-summary" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.82rem"></div>
       </div>
-      <div id="pdf-day-picker" style="display:none;margin-bottom:14px">
-        <div style="font-size:0.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Selecciona el día</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div id="pdf-day-picker" style="display:none;margin-bottom:16px">
+        <div style="font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px">¿Para qué día?</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
           <button class="pdf-day-btn" data-day="LUN" onclick="selectPdfDay(this)">Lunes</button>
           <button class="pdf-day-btn" data-day="MAR" onclick="selectPdfDay(this)">Martes</button>
           <button class="pdf-day-btn" data-day="MIE" onclick="selectPdfDay(this)">Miércoles</button>
@@ -1568,52 +1576,25 @@ function closePdfModal(e) {
 
 function selectPdfOpt(opt) {
   pdfMode = opt;
-  const allEl = document.getElementById('pdf-opt-all');
-  const dayEl = document.getElementById('pdf-opt-day');
-  const checkAll = document.getElementById('pdf-check-all');
-  const checkDay = document.getElementById('pdf-check-day');
-  const picker = document.getElementById('pdf-day-picker');
-  const printBtn = document.getElementById('pdf-print-btn');
+  ['day','summary'].forEach(function(o) {
+    var el = document.getElementById('pdf-opt-' + o);
+    var ch = document.getElementById('pdf-check-' + o);
+    if (el) { el.style.borderColor = 'var(--border)'; el.style.background = 'none'; }
+    if (ch) { ch.textContent = ''; ch.style.background = 'none'; ch.style.borderColor = 'var(--border)'; }
+  });
+  pdfDay = null;
+  document.querySelectorAll('.pdf-day-btn').forEach(function(b) { b.classList.remove('sel'); });
+  enablePrintBtn(false);
 
-  if (opt === 'all') {
-    allEl.style.borderColor = 'var(--orange)';
-    allEl.style.background = 'var(--orange-pale)';
-    checkAll.textContent = '✓';
-    checkAll.style.background = 'var(--orange)';
-    checkAll.style.borderColor = 'var(--orange)';
-    checkAll.style.color = 'white';
-    dayEl.style.borderColor = 'var(--border)';
-    dayEl.style.background = 'none';
-    checkDay.textContent = '';
-    checkDay.style.background = 'none';
-    checkDay.style.borderColor = 'var(--border)';
-    picker.style.display = 'none';
-    pdfDay = null;
-    document.querySelectorAll('.pdf-day-btn').forEach(b => b.classList.remove('sel'));
-    enablePrintBtn(true);
-  } else if (opt === 'day') {
-    dayEl.style.borderColor = 'var(--orange)';
-    dayEl.style.background = 'var(--orange-pale)';
-    checkDay.textContent = '✓';
-    checkDay.style.background = 'var(--orange)';
-    checkDay.style.borderColor = 'var(--orange)';
-    checkDay.style.color = 'white';
-    allEl.style.borderColor = 'var(--border)';
-    allEl.style.background = 'none';
-    checkAll.textContent = '';
-    checkAll.style.background = 'none';
-    checkAll.style.borderColor = 'var(--border)';
-    picker.style.display = 'block';
-    enablePrintBtn(false);
-  } else {
-    allEl.style.borderColor = 'var(--border)'; allEl.style.background = 'none';
-    dayEl.style.borderColor = 'var(--border)'; dayEl.style.background = 'none';
-    checkAll.textContent = ''; checkDay.textContent = '';
-    picker.style.display = 'none';
-    enablePrintBtn(false);
-  }
+  if (!opt) { document.getElementById('pdf-day-picker').style.display = 'none'; return; }
+
+  var selEl = document.getElementById('pdf-opt-' + opt);
+  var selCh = document.getElementById('pdf-check-' + opt);
+  if (selEl) { selEl.style.borderColor = 'var(--orange)'; selEl.style.background = 'var(--orange-pale)'; }
+  if (selCh) { selCh.textContent = '✓'; selCh.style.background = 'var(--orange)'; selCh.style.borderColor = 'var(--orange)'; selCh.style.color = 'white'; }
+  // Always show day picker — both modes need a day
+  document.getElementById('pdf-day-picker').style.display = 'block';
 }
-
 function selectPdfDay(btn) {
   document.querySelectorAll('.pdf-day-btn').forEach(b => b.classList.remove('sel'));
   btn.classList.add('sel');
@@ -1630,10 +1611,128 @@ function enablePrintBtn(on) {
 
 function doPrint() {
   document.getElementById('pdf-overlay').style.display = 'none';
-  const orders = Object.values(allOrders).filter(o => !o.done);
+  var orders = Object.values(allOrders).filter(function(o) { return !o.done; });
   if (!orders.length) return toast('No hay pedidos pendientes');
-  const daysFilter = pdfMode === 'all' ? DAYS : [pdfDay];
-  generatePDF(orders, daysFilter);
+  if (!pdfDay) return toast('⚠️ Selecciona un día primero');
+  if (pdfMode === 'summary') {
+    generateSummaryPDF(orders, pdfDay);
+  } else {
+    generatePDF(orders, [pdfDay]);
+  }
+}
+
+function generateSummaryPDF(orders, day) {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const dayColors = {LUN:'#6366F1', MAR:'#0D9373', MIE:'#D97706', JUE:'#DB2777', VIE:'#16A34A'};
+
+  // Filter to selected day only
+  var dayOrders = orders.filter(function(o) { return o.day === day; });
+  if (!dayOrders.length) { toast('No hay pedidos para ' + DAY_LABELS[day]); return; }
+
+  // Aggregate products for this day
+  var totals = {};
+  dayOrders.forEach(function(o) {
+    (o.products || []).forEach(function(p) {
+      if (!totals[p.name]) totals[p.name] = { qty: 0, clients: [], days: [] };
+      totals[p.name].qty += parseInt(p.qty) || 1;
+      if (totals[p.name].clients.indexOf(o.empresa) === -1) totals[p.name].clients.push(o.empresa);
+      if (totals[p.name].days.indexOf(o.day) === -1) totals[p.name].days.push(o.day);
+    });
+  });
+
+  // Sort by quantity desc
+  var sorted = Object.keys(totals).sort(function(a, b) {
+    return totals[b].qty - totals[a].qty;
+  });
+
+  // Build product totals for selected day
+  var perDay = {};
+  dayOrders.forEach(function(o) {
+    (o.products || []).forEach(function(p) {
+      if (!perDay[p.name]) perDay[p.name] = 0;
+      perDay[p.name] += parseInt(p.qty) || 1;
+    });
+  });
+
+  var totalProducts = sorted.length;
+  var totalUnits = sorted.reduce(function(acc, k) { return acc + totals[k].qty; }, 0);
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' +
+    '* { box-sizing:border-box; }' +
+    'body { font-family:Segoe UI,sans-serif; color:#111; padding:30px; max-width:900px; margin:0 auto; }' +
+    '.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; border-bottom:3px solid #E8440A; padding-bottom:16px; }' +
+    'h1 { font-size:1.6rem; color:#E8440A; margin:0 0 4px 0; }' +
+    '.subtitle { font-size:0.85rem; color:#6B7280; }' +
+    '.meta { text-align:right; font-size:0.78rem; color:#6B7280; }' +
+    '.stats { display:flex; gap:16px; margin-bottom:28px; }' +
+    '.stat { flex:1; background:#F9FAFB; border-radius:10px; padding:14px 18px; border-left:4px solid #E8440A; }' +
+    '.stat-num { font-size:1.8rem; font-weight:800; color:#E8440A; line-height:1; }' +
+    '.stat-label { font-size:0.75rem; color:#6B7280; margin-top:3px; }' +
+    'h2 { font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#6B7280; margin:24px 0 12px; }' +
+    'table { width:100%; border-collapse:collapse; margin-bottom:28px; }' +
+    'th { text-align:left; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:#9CA3AF; padding:8px 12px; border-bottom:2px solid #E5E7EB; }' +
+    'th:last-child { text-align:right; }' +
+    'td { padding:10px 12px; border-bottom:1px solid #F3F4F6; font-size:0.88rem; vertical-align:top; }' +
+    'td:last-child { text-align:right; font-weight:800; color:#E8440A; font-size:1rem; white-space:nowrap; }' +
+    'tr:hover td { background:#FAFAFA; }' +
+    '.day-tag { display:inline-block; font-size:0.65rem; font-weight:800; padding:2px 7px; border-radius:99px; margin:1px 2px 1px 0; }' +
+    '.clients { font-size:0.75rem; color:#9CA3AF; margin-top:3px; }' +
+    '.day-section { margin-bottom:20px; page-break-inside:avoid; }' +
+    '.day-title { font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:.08em; padding:5px 12px; border-radius:99px; display:inline-block; margin-bottom:10px; }' +
+    '@media print { body{padding:15px} .no-print{display:none} }' +
+    '</style></head><body>';
+
+  html += '<div class="header"><div><h1>PEDIDOS CAPRICHO</h1><div class="subtitle">Resumen consolidado de productos</div></div>' +
+    '<div class="meta">Generado el ' + dateStr + '<br><strong>' + orders.length + ' pedido(s) incluidos</strong></div></div>';
+
+  // Stats
+  html += '<div class="stats">' +
+    '<div class="stat"><div class="stat-num">' + orders.length + '</div><div class="stat-label">Pedidos totales</div></div>' +
+    '<div class="stat"><div class="stat-num">' + totalProducts + '</div><div class="stat-label">Productos distintos</div></div>' +
+    '<div class="stat"><div class="stat-num">' + totalUnits + '</div><div class="stat-label">Unidades totales</div></div>' +
+    '</div>';
+
+  // Global product table
+  html += '<h2>Todos los productos (ordenados por cantidad)</h2>';
+  html += '<table><thead><tr><th>Producto</th><th>Clientes</th><th>Días</th><th>Total</th></tr></thead><tbody>';
+
+  sorted.forEach(function(name) {
+    var t = totals[name];
+    var dayTags = t.days.map(function(d) {
+      var c = dayColors[d] || '#6B7280';
+      return '<span class="day-tag" style="background:' + c + '18;color:' + c + '">' + (DAY_LABELS[d]||d) + '</span>';
+    }).join('');
+    html += '<tr><td><strong>' + name + '</strong><div class="clients">' + t.clients.join(', ') + '</div></td>' +
+      '<td>' + t.clients.length + '</td>' +
+      '<td>' + dayTags + '</td>' +
+      '<td>×' + t.qty + '</td></tr>';
+  });
+  html += '</tbody></table>';
+
+  // Clients detail for this day
+  html += '<h2>Detalle por cliente</h2>';
+  dayOrders.forEach(function(o) {
+    var color = dayColors[day] || '#6B7280';
+    var prodsRows = (o.products||[]).map(function(p) {
+      return '<tr><td>' + p.name + '</td><td style="text-align:right;font-weight:800;color:' + color + '">×' + p.qty + '</td></tr>';
+    }).join('');
+    html += '<div style="margin-bottom:12px;border:1px solid #E5E7EB;border-radius:8px;padding:10px 14px;border-left:4px solid ' + color + '">' +
+      '<div style="font-weight:800;font-size:0.88rem;margin-bottom:6px">' + o.empresa + '</div>' +
+      '<table style="width:100%;border-collapse:collapse"><tbody>' + prodsRows + '</tbody></table></div>';
+  });
+
+  html += '</body></html>';
+
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+  toast('📊 Resumen de ' + DAY_LABELS[day] + ' abierto — Ctrl+P para imprimir');
 }
 
 function generatePDF(orders, daysFilter) {

@@ -1,5 +1,4 @@
 <!DOCTYPE html><!-- v8 -->
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -10,7 +9,6 @@
 <title>Pedidos Capricho</title>
 
 <!-- PWA -->
-
 <meta name="application-name" content="Pedidos Capricho">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -19,7 +17,6 @@
 <link rel="manifest" id="pwa-manifest">
 
 <!-- Icon inline (iOS + Android) -->
-
 <link rel="apple-touch-icon" id="pwa-icon">
 <link rel="icon" type="image/png" id="pwa-favicon">
 
@@ -92,15 +89,11 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 </script>
-
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Montserrat:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK (compat version - works on all mobile browsers) -->
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyCpOkNUimkCbvS5IxykQnBiLdCAfcbFuAk",
@@ -137,33 +130,33 @@ function roundRect(ctx, x, y, w, h, r) {
 
 <style>
 :root {
-  --bg: #F5F5F0;
+  --bg: #F7F6F3;
   --white: #FFFFFF;
-  --orange: #FF5722;
-  --orange-light: #FF8A65;
-  --orange-pale: #FFF3EF;
-  --teal: #00BFA5;
-  --teal-pale: #E0F7F4;
-  --navy: #1A1A2E;
-  --navy2: #16213E;
-  --text: #1A1A2E;
-  --muted: #9E9E9E;
-  --border: #E8E8E0;
-  --lun: #5C6BC0;
-  --mar: #26A69A;
-  --mie: #FFA726;
-  --jue: #EC407A;
-  --vie: #66BB6A;
-  --shadow: 0 4px 20px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-  --r: 16px;
-  --r-sm: 10px;
+  --orange: #E8440A;
+  --orange-light: #F06830;
+  --orange-pale: #FEF0EB;
+  --teal: #0D9373;
+  --teal-pale: #E6F7F2;
+  --navy: #111827;
+  --navy2: #1F2937;
+  --text: #111827;
+  --muted: #6B7280;
+  --border: #E5E7EB;
+  --lun: #6366F1;
+  --mar: #0D9373;
+  --mie: #D97706;
+  --jue: #DB2777;
+  --vie: #16A34A;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.1);
+  --r: 14px;
+  --r-sm: 9px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -173,17 +166,18 @@ body {
 /* ─── NAV ─── */
 .topbar {
   background: var(--navy);
-  padding: 0 20px;
+  padding: 0 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 56px;
   position: sticky;
   top: 0;
   z-index: 200;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .logo {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
   color: white;
   font-size: 1.15rem;
@@ -205,17 +199,18 @@ body {
 .tabs {
   background: var(--white);
   display: flex;
-  border-bottom: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
   position: sticky;
-  top: 60px;
+  top: 56px;
   z-index: 190;
+  box-shadow: 0 1px 0 var(--border);
 }
 .tab-btn {
   flex: 1;
   padding: 14px 10px;
   border: none;
   background: none;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--muted);
@@ -253,11 +248,12 @@ body {
   background: var(--white);
   border-radius: var(--r);
   box-shadow: var(--shadow);
-  padding: 20px;
-  margin-bottom: 14px;
+  padding: 22px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
 }
 .section-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.7rem;
   letter-spacing: .1em;
@@ -283,7 +279,7 @@ body {
   padding: 14px 16px;
   border: 2px solid var(--border);
   border-radius: var(--r-sm);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
@@ -356,7 +352,7 @@ body {
   border: none;
   background: none;
   text-align: center;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 1.05rem;
   color: var(--text);
@@ -384,7 +380,7 @@ body {
   border-radius: var(--r-sm);
   background: none;
   color: var(--muted);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
@@ -407,7 +403,7 @@ body {
   text-align: center;
   cursor: pointer;
   transition: all .2s;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.75rem;
   color: var(--muted);
@@ -458,7 +454,7 @@ body {
   padding: 10px 12px;
   border: 2px solid var(--border);
   border-radius: var(--r-sm);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   outline: none;
@@ -477,7 +473,7 @@ body {
   border-radius: 99px;
   border: 2px solid var(--border);
   background: white;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.72rem;
   cursor: pointer;
@@ -506,7 +502,7 @@ textarea.ac-input {
   color: white;
   border: none;
   border-radius: var(--r);
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
   font-size: 1.05rem;
   letter-spacing: .03em;
@@ -537,7 +533,7 @@ textarea.ac-input {
   padding: 12px 16px 12px 42px;
   border: 2px solid var(--border);
   border-radius: var(--r-sm);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
   background: white;
@@ -558,7 +554,7 @@ textarea.ac-input {
   border-radius: 99px;
   border: 2px solid var(--border);
   background: white;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.75rem;
   cursor: pointer;
@@ -574,7 +570,7 @@ textarea.ac-input {
   border-radius: var(--r-sm);
   border: 2px solid var(--border);
   background: white;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
@@ -610,7 +606,7 @@ textarea.ac-input {
 .col-VIE .day-col-header { border-left-color: var(--vie); }
 
 .day-col-header h3 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: .08em;
@@ -636,10 +632,12 @@ textarea.ac-input {
   background: white;
   border-radius: var(--r);
   box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   overflow: hidden;
   animation: fadeUp .25s ease;
-  transition: opacity .3s, transform .3s;
+  transition: all .2s;
 }
+.order-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
 .order-card.done {
   opacity: .45;
   transform: scale(.97);
@@ -665,7 +663,7 @@ textarea.ac-input {
   margin-bottom: 10px;
 }
 .oc-empresa {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 700;
   font-size: 0.88rem;
   line-height: 1.3;
@@ -691,7 +689,7 @@ textarea.ac-input {
 .oc-prod-row:last-child { border-bottom: none; }
 .oc-prod-name { flex: 1; font-weight: 600; color: var(--text); margin-right: 8px; }
 .oc-prod-qty {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
   font-size: 0.9rem;
   color: var(--orange);
@@ -741,7 +739,7 @@ textarea.ac-input {
   border: none;
   background: #E8F5E9;
   color: #2E7D32;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 800;
   cursor: pointer;
@@ -754,7 +752,7 @@ textarea.ac-input {
   border: none;
   background: #FFF8E1;
   color: #E65100;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 800;
   cursor: pointer;
@@ -793,7 +791,7 @@ textarea.ac-input {
   border-top: 2px dashed var(--border);
 }
 .done-section-title {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.7rem;
   font-weight: 900;
   letter-spacing: .1em;
@@ -828,7 +826,7 @@ textarea.ac-input {
   box-shadow: var(--shadow-lg);
 }
 .modal h2 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 900;
   font-size: 1.2rem;
   margin-bottom: 8px;
@@ -851,7 +849,7 @@ textarea.ac-input {
   background: var(--bg);
   border: 2px solid var(--border);
   border-radius: var(--r-sm);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 0.9rem;
   cursor: pointer;
@@ -871,7 +869,7 @@ textarea.ac-input {
   color: white;
   padding: 12px 24px;
   border-radius: 99px;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
   font-size: 0.85rem;
   z-index: 500;
@@ -887,7 +885,7 @@ textarea.ac-input {
   border: none;
   background: #E3F2FD;
   color: #1565C0;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.8rem;
   font-weight: 800;
   cursor: pointer;
@@ -899,12 +897,10 @@ textarea.ac-input {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 </style>
-
 </head>
 <body>
 
 <!-- Firebase Setup Modal -->
-
 <div class="modal-overlay" id="firebase-modal">
   <div class="modal">
     <h2>🔥 Configura Firebase</h2>
@@ -921,31 +917,27 @@ textarea.ac-input {
 </div>
 
 <!-- EDIT MODAL -->
-
 <div class="modal-overlay hidden" id="edit-modal">
   <div class="modal" style="max-height:90vh;overflow-y:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <h2 style="font-size:1.1rem">✏️ Modificar pedido</h2>
       <button onclick="closeEditModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9E9E9E;line-height:1">×</button>
     </div>
-    <div id="edit-empresa-label" style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85rem;color:#FF5722;margin-bottom:12px;padding:8px 12px;background:#FFF3EF;border-radius:8px"></div>
+    <div id="edit-empresa-label" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem;color:#FF5722;margin-bottom:12px;padding:8px 12px;background:#FFF3EF;border-radius:8px"></div>
 
-```
-<div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
-<div id="edit-products-list" style="margin-bottom:8px"></div>
-<button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
+    <div id="edit-products-list" style="margin-bottom:8px"></div>
+    <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
 
-<div style="font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
-<textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
+    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
 
-<button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
-```
-
+    <button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
   </div>
 </div>
 
 <div class="topbar">
-  <div><div class="logo">PEDIDOS <em>CAPRICHO</em></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.35);font-family:'Nunito',sans-serif;letter-spacing:.05em;margin-top:1px">Hecho por Efraín Barba</div></div>
+  <div><div class="logo">PEDIDOS <em>CAPRICHO</em></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.35);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.05em;margin-top:1px">Hecho por Efraín Barba</div></div>
   <div style="display:flex;align-items:center;gap:6px">
     <span class="status-dot" id="status-dot"></span>
     <span class="status-label" id="status-label">Conectando…</span>
@@ -955,73 +947,69 @@ textarea.ac-input {
 <div class="tabs">
   <button class="tab-btn active" id="tab-form" onclick="switchTab('form')">📋 Nuevo pedido</button>
   <button class="tab-btn" id="tab-panel" onclick="switchTab('panel')">📅 Panel <span class="tab-badge" id="badge">0</span></button>
+  <button class="tab-btn" id="tab-historial" onclick="switchTab('historial')">🗂 Historial <span class="tab-badge" style="background:#6B7280" id="hist-badge">0</span></button>
 </div>
 
 <!-- ══════════ FORMULARIO ══════════ -->
-
 <div class="view active" id="view-form">
   <div class="form-wrap">
 
-```
-<!-- Cliente -->
-<div class="section-card">
-  <div class="section-title"><span class="icon">🏢</span>Cliente</div>
-  <div class="autocomplete-wrap">
-    <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
-      oninput="acFilter(this,'ac-clientes','clientes')"
-      onkeydown="acKey(event,'ac-clientes')"
-      onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
-    <div class="ac-dropdown" id="ac-clientes"></div>
-  </div>
-</div>
+    <!-- Cliente -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🏢</span>Cliente</div>
+      <div class="autocomplete-wrap">
+        <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
+          oninput="acFilter(this,'ac-clientes','clientes')"
+          onkeydown="acKey(event,'ac-clientes')"
+          onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
+        <div class="ac-dropdown" id="ac-clientes"></div>
+      </div>
+    </div>
 
-<!-- Productos -->
-<div class="section-card">
-  <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
-  <div id="products-list"></div>
-  <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
-</div>
+    <!-- Productos -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
+      <div id="products-list"></div>
+      <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
+    </div>
 
-<!-- Día de entrega -->
-<div class="section-card">
-  <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
-  <div class="days-grid" id="days-grid">
-    <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
-    <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
-    <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
-    <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
-    <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
-  </div>
-</div>
+    <!-- Día de entrega -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
+      <div class="days-grid" id="days-grid">
+        <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
+        <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
+        <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
+        <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
+        <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
+      </div>
+    </div>
 
-<!-- Incidencia -->
-<div class="section-card">
-  <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
-    <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
-    <span class="arrow">▾</span>
-  </div>
-  <div class="incidencia-body" id="inc-body">
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;font-weight:600;">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
-    <div id="inc-lines"></div>
-    <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
-  </div>
-</div>
+    <!-- Incidencia -->
+    <div class="section-card">
+      <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
+        <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
+        <span class="arrow">▾</span>
+      </div>
+      <div class="incidencia-body" id="inc-body">
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;font-weight:600;">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
+        <div id="inc-lines"></div>
+        <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
+      </div>
+    </div>
 
-<!-- Notas -->
-<div class="section-card">
-  <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
-  <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3"></textarea>
-</div>
+    <!-- Notas -->
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
+      <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3"></textarea>
+    </div>
 
-<div style="height:80px"></div>
-```
-
+    <div style="height:80px"></div>
   </div>
   <button class="btn-submit" id="btn-submit" onclick="submitOrder()">Enviar pedido →</button>
 </div>
 
 <!-- ══════════ PANEL SEMANAL ══════════ -->
-
 <div class="view" id="view-panel">
   <div class="panel-wrap">
     <div class="panel-search-bar">
@@ -1032,7 +1020,7 @@ textarea.ac-input {
       <button class="btn-clear-done" onclick="clearDone()">🗑 Limpiar</button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-      <span style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
+      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
       <button class="day-filter-btn active" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
       <button class="day-filter-btn" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
       <button class="day-filter-btn" data-day="LUN" onclick="setDayFilter(this)">Lun</button>
@@ -1045,7 +1033,7 @@ textarea.ac-input {
     <div id="done-section" style="display:none;margin-top:20px">
       <button onclick="toggleDoneDrawer()" id="done-toggle-btn"
         style="width:100%;padding:12px 18px;background:white;border:2px solid var(--border);border-radius:12px;
-               font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8rem;color:var(--muted);
+               font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.8rem;color:var(--muted);
                cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s">
         <span>✓ Completados — <span id="done-count">0</span> pedido(s)</span>
         <span id="done-arrow">▾</span>
@@ -1053,6 +1041,25 @@ textarea.ac-input {
       <div id="done-drawer" style="display:none;margin-top:10px">
         <div class="done-grid" id="done-grid"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HISTORIAL ══════════ -->
+<div class="view" id="view-historial">
+  <div class="panel-wrap">
+    <div class="panel-search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar en historial…" id="hist-search" oninput="renderHistorial(this.value)">
+      </div>
+      <button class="btn-clear-done" onclick="clearAllDone()">🗑 Vaciar historial</button>
+    </div>
+    <div id="hist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;"></div>
+    <div id="hist-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted)">
+      <div style="font-size:3rem;margin-bottom:12px">🗂</div>
+      <div style="font-weight:700;font-size:1rem">Sin pedidos completados</div>
+      <div style="font-size:0.85rem;margin-top:6px">Los pedidos marcados como completados aparecerán aquí</div>
     </div>
   </div>
 </div>
@@ -1131,7 +1138,11 @@ function listenOrders() {
     db.ref('pedidos').on('value', snap => {
       allOrders = snap.val() || {};
       updateBadge();
+      updateHistBadge();
       renderPanel(document.getElementById('panel-search').value || '');
+      if (document.getElementById('view-historial').classList.contains('active')) {
+        renderHistorial(document.getElementById('hist-search').value || '');
+      }
     });
   } else {
     loadLocal();
@@ -1189,7 +1200,8 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + tab).classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  renderPanel(document.getElementById('panel-search').value || '');
+  if (tab === 'panel') renderPanel(document.getElementById('panel-search').value || '');
+  if (tab === 'historial') renderHistorial(document.getElementById('hist-search').value || '');
 }
 
 // ══════════════════════════════════════════════════
@@ -1566,45 +1578,60 @@ function renderPanel(filter = '') {
     grid.appendChild(col);
   });
 
-  // Done - compact cards
-  const doneSection = document.getElementById('done-section');
-  const doneGrid = document.getElementById('done-grid');
-  const doneCount = document.getElementById('done-count');
-  doneGrid.innerHTML = '';
-  if (done.length) {
-    doneSection.style.display = 'block';
-    doneCount.textContent = done.length;
-    done.forEach(o => {
-      const card = document.createElement('div');
-      card.style.cssText = 'background:white;border:1px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s;min-width:160px;max-width:220px;flex:1';
-      card.onmouseenter = () => { card.style.borderColor = 'var(--orange)'; card.style.transform = 'translateY(-2px)'; };
-      card.onmouseleave = () => { card.style.borderColor = 'var(--border)'; card.style.transform = 'none'; };
-      card.onclick = () => openDetail(o.id);
-
-      const dayColors = {LUN:'#5C6BC0',MAR:'#26A69A',MIE:'#FFA726',JUE:'#EC407A',VIE:'#66BB6A'};
-      const color = dayColors[o.day] || '#9E9E9E';
-
-      card.innerHTML = `
-        <div style="font-size:0.65rem;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">${DAY_LABELS[o.day] || o.day} · ${o.date}</div>
-        <div style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text);line-height:1.3;margin-bottom:4px">${o.empresa}</div>
-        <div style="font-size:0.72rem;color:var(--muted);font-weight:600">${(o.products||[]).length} producto(s)</div>
-      `;
-      doneGrid.appendChild(card);
-    });
-  } else {
-    doneSection.style.display = 'none';
-  }
+  // Update historial badge
+  updateHistBadge();
 }
 
-function toggleDoneDrawer() {
-  const drawer = document.getElementById('done-drawer');
-  const arrow = document.getElementById('done-arrow');
-  const btn = document.getElementById('done-toggle-btn');
-  const isOpen = drawer.style.display !== 'none';
-  drawer.style.display = isOpen ? 'none' : 'block';
-  arrow.textContent = isOpen ? '▾' : '▴';
-  btn.style.borderColor = isOpen ? 'var(--border)' : 'var(--teal)';
-  btn.style.color = isOpen ? 'var(--muted)' : 'var(--teal)';
+function updateHistBadge() {
+  const n = Object.values(allOrders).filter(o => o.done).length;
+  document.getElementById('hist-badge').textContent = n;
+}
+
+function renderHistorial(filter = '') {
+  const q = (filter || '').toLowerCase();
+  const done = Object.entries(allOrders)
+    .map(([id,o]) => ({...o, id}))
+    .filter(o => o.done && matchesFilter(o, q))
+    .sort((a,b) => (b.id||'').localeCompare(a.id||''));
+
+  const grid = document.getElementById('hist-grid');
+  const empty = document.getElementById('hist-empty');
+  grid.innerHTML = '';
+
+  if (!done.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+
+  const dayColors = {LUN:'var(--lun)',MAR:'var(--mar)',MIE:'var(--mie)',JUE:'var(--jue)',VIE:'var(--vie)'};
+
+  done.forEach(o => {
+    const color = dayColors[o.day] || 'var(--muted)';
+    const card = document.createElement('div');
+    card.style.cssText = 'background:white;border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow)';
+    card.onmouseenter = () => { card.style.transform='translateY(-2px)'; card.style.boxShadow='var(--shadow-lg)'; };
+    card.onmouseleave = () => { card.style.transform=''; card.style.boxShadow='var(--shadow)'; };
+    card.onclick = () => openDetail(o.id);
+
+    const prodsPreview = (o.products||[]).slice(0,2).map(p =>
+      `<div style="font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">• ${p.name} ×${p.qty}</div>`
+    ).join('');
+    const more = (o.products||[]).length > 2 ? `<div style="font-size:0.72rem;color:var(--muted)">+${(o.products||[]).length-2} más…</div>` : '';
+
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:0.65rem;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:.07em;background:${color}18;padding:3px 9px;border-radius:99px">${DAY_LABELS[o.day]||o.day}</span>
+        <span style="font-size:0.7rem;color:var(--muted);font-weight:600">${o.date} · ${o.ts}</span>
+      </div>
+      <div style="font-weight:800;font-size:0.92rem;margin-bottom:8px;line-height:1.3">${o.empresa}</div>
+      <div style="border-top:1px solid var(--border);padding-top:8px">${prodsPreview}${more}</div>
+      ${o.esIncidencia ? '<div style="margin-top:6px;font-size:0.7rem;font-weight:700;color:#D97706;background:#FEF3C7;padding:3px 8px;border-radius:6px;display:inline-block">⚠️ Incidencia reprogramada</div>' : ''}
+    `;
+    grid.appendChild(card);
+  });
 }
 
 let detailId = null;
@@ -1613,27 +1640,40 @@ function openDetail(id) {
   const o = allOrders[id];
   if (!o) return;
   detailId = id;
-  const dayColors = {LUN:'#5C6BC0',MAR:'#26A69A',MIE:'#FFA726',JUE:'#EC407A',VIE:'#66BB6A'};
-  const color = dayColors[o.day] || '#9E9E9E';
 
-  document.getElementById('detail-title').innerHTML =
-    '<span style="color:'+color+'">' + (DAY_LABELS[o.day]||o.day) + '</span> · ' + o.empresa;
+  const dayColors = {LUN:'var(--lun)',MAR:'var(--mar)',MIE:'var(--mie)',JUE:'var(--jue)',VIE:'var(--vie)'};
+  const dayBgs = {LUN:'#EEF2FF',MAR:'#ECFDF5',MIE:'#FFFBEB',JUE:'#FDF2F8',VIE:'#F0FDF4'};
+  const color = dayColors[o.day] || 'var(--muted)';
+  const bg = dayBgs[o.day] || '#F3F4F6';
+
+  const badge = document.getElementById('detail-day-badge');
+  badge.textContent = DAY_LABELS[o.day] || o.day;
+  badge.style.color = color;
+  badge.style.background = bg;
+
+  document.getElementById('detail-title').textContent = o.empresa;
+  document.getElementById('detail-date').textContent = 'Pedido el ' + o.date + ' a las ' + o.ts;
 
   const prods = (o.products||[]).map(p =>
-    '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F5F5F0;font-size:0.85rem">' +
-    '<span style="font-weight:600">' + p.name + '</span>' +
-    '<span style="font-family:Montserrat,sans-serif;font-weight:900;color:#FF5722;background:#FFF3EF;border-radius:6px;padding:1px 8px">×' + p.qty + '</span>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">' +
+    '<span style="font-weight:600;font-size:0.88rem">' + p.name + '</span>' +
+    '<span style="font-weight:800;color:var(--orange);background:var(--orange-pale);border-radius:6px;padding:2px 9px;font-size:0.82rem;white-space:nowrap;margin-left:8px">×' + p.qty + '</span>' +
     '</div>'
   ).join('');
 
-  const incHtml = (o.incidencias||[]).length ? '<div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;padding:10px;margin-top:10px"><div style="font-size:0.7rem;font-weight:800;color:#E65100;margin-bottom:6px">⚠️ INCIDENCIA</div>' +
-    o.incidencias.map(i => '<div style="font-size:0.83rem;font-weight:600">' + i.producto + ' ×' + (i.qty||1) + '</div><div style="font-size:0.72rem;color:#9E9E9E">Reparto: ' + (DAY_LABELS[i.cuando]||i.cuando) + '</div>').join('') + '</div>' : '';
+  const incHtml = (o.incidencias||[]).length ?
+    '<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:12px;margin-top:14px">' +
+    '<div style="font-size:0.68rem;font-weight:800;color:#D97706;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px">⚠️ Incidencia</div>' +
+    o.incidencias.map(i =>
+      '<div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px">' +
+      '<span style="font-weight:600">' + i.producto + ' ×' + (i.qty||1) + '</span>' +
+      '<span style="color:var(--muted);font-size:0.78rem">→ ' + (DAY_LABELS[i.cuando]||i.cuando) + '</span></div>'
+    ).join('') + '</div>' : '';
 
-  const notasHtml = o.notas ? '<div style="margin-top:10px;padding:8px 10px;background:#F5F5F0;border-radius:8px;font-size:0.82rem;color:#9E9E9E;font-style:italic">' + o.notas + '</div>' : '';
+  const notasHtml = o.notas ?
+    '<div style="margin-top:12px;padding:10px 12px;background:var(--bg);border-radius:9px;font-size:0.83rem;color:var(--muted);font-style:italic;border-left:3px solid var(--border)">' + o.notas + '</div>' : '';
 
-  const dateHtml = '<div style="font-size:0.72rem;color:#9E9E9E;margin-bottom:12px">Pedido el ' + o.date + ' a las ' + o.ts + '</div>';
-
-  document.getElementById('detail-body').innerHTML = dateHtml + prods + incHtml + notasHtml;
+  document.getElementById('detail-body').innerHTML = '<div style="padding-top:4px">' + prods + '</div>' + incHtml + notasHtml;
   document.getElementById('detail-overlay').style.display = 'flex';
 }
 
@@ -1647,8 +1687,9 @@ async function reopenFromDetail() {
   if (!detailId) return;
   await updateOrder(detailId, { done: false });
   document.getElementById('detail-overlay').style.display = 'none';
-  if (!useFirebase) renderPanel();
-  toast('↩ Pedido reabierto');
+  if (!useFirebase) { renderPanel(); renderHistorial(); updateHistBadge(); }
+  toast('↩ Pedido reabierto — está de vuelta en el Panel');
+  switchTab('panel');
 }
 
 async function deleteFromDetail() {
@@ -1802,8 +1843,9 @@ async function saveEdit() {
 
 async function doUpdate(id, changes) {
   await updateOrder(id, changes);
-  if (!useFirebase) renderPanel();
-  toast(changes.done ? '✓ Pedido completado' : '↩ Pedido reabierto');
+  if (!useFirebase) { renderPanel(); renderHistorial(); updateHistBadge(); }
+  if (changes.done) toast('✓ Completado — ver en Historial');
+  else toast('↩ Pedido reabierto');
 }
 
 async function doDelete(id) {
@@ -1815,10 +1857,13 @@ async function doDelete(id) {
 async function clearDone() {
   const done = Object.entries(allOrders).filter(([,o]) => o.done).map(([id]) => id);
   if (!done.length) return toast('No hay pedidos completados');
-  if (!confirm(`¿Eliminar ${done.length} pedido(s) completado(s)?`)) return;
+  if (!confirm('¿Eliminar ' + done.length + ' pedido(s) del historial?')) return;
   for (const id of done) await deleteOrder(id);
-  toast('✓ Completados eliminados');
+  toast('🗑 Historial vaciado');
+  renderHistorial();
 }
+
+async function clearAllDone() { return clearDone(); }
 
 function filterPanel(val) {
   renderPanel(val);
@@ -1846,6 +1891,5 @@ function toast(msg) {
 addProductLine();
 document.getElementById('firebase-modal').classList.add('hidden');
 </script>
-
 </body>
 </html>

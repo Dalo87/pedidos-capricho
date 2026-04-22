@@ -1632,12 +1632,9 @@ function doPrint() {
   document.getElementById('pdf-overlay').style.display = 'none';
   const orders = Object.values(allOrders).filter(o => !o.done);
   if (!orders.length) return toast('No hay pedidos pendientes');
-
-  const daysToPrint = pdfMode === 'all' ? DAYS : [pdfDay];
-  generatePDF(orders, daysToExport(daysToprint => daysToprint, daysToprint => daysToprint));
+  const daysFilter = pdfMode === 'all' ? DAYS : [pdfDay];
+  generatePDF(orders, daysFilter);
 }
-
-function daysToExport(days) { return days; }
 
 function generatePDF(orders, daysFilter) {
   const dayColors = {LUN:'#6366F1',MAR:'#0D9373',MIE:'#D97706',JUE:'#DB2777',VIE:'#16A34A'};

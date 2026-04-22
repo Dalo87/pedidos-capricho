@@ -167,6 +167,183 @@ function roundRect(ctx, x, y, w, h, r) {
   --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 20px 40px rgba(0,0,0,0.4);
 }
 
+/* Dark mode overrides */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: #12151E !important;
+  color: #F1F5F9 !important;
+  border-color: #2D3142 !important;
+}
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #4B5563 !important;
+}
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: var(--orange) !important;
+  background: #1A1D27 !important;
+}
+[data-theme="dark"] .ac-dropdown {
+  background: #1A1D27;
+  border-color: #2D3142;
+}
+[data-theme="dark"] .ac-item {
+  border-bottom-color: #2D3142;
+  color: #F1F5F9;
+}
+[data-theme="dark"] .ac-item:hover,
+[data-theme="dark"] .ac-item.highlighted {
+  background: #2A1810;
+  color: var(--orange);
+}
+[data-theme="dark"] .section-card {
+  background: #1A1D27;
+  border-color: #2D3142;
+}
+[data-theme="dark"] .section-title {
+  color: #64748B;
+}
+[data-theme="dark"] .section-title .icon {
+  background: #2A1810;
+}
+[data-theme="dark"] .day-pill {
+  background: #12151E;
+  border-color: #2D3142;
+  color: #64748B;
+}
+[data-theme="dark"] .qty-box {
+  background: #12151E;
+  border-color: #2D3142;
+}
+[data-theme="dark"] .qty-input {
+  color: #F1F5F9;
+  background: transparent;
+}
+[data-theme="dark"] .btn-remove-line {
+  background: #12151E;
+  border-color: #2D3142;
+  color: #64748B;
+}
+[data-theme="dark"] .btn-add-line {
+  border-color: #2D3142;
+  color: #64748B;
+  background: transparent;
+}
+[data-theme="dark"] .btn-add-line:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  background: #2A1810;
+}
+[data-theme="dark"] .incidencia-toggle {
+  background: #1F1A0A;
+  border-color: #4A3800;
+  color: #FFA726;
+}
+[data-theme="dark"] .incidencia-body {
+  border-top-color: #4A3800;
+}
+[data-theme="dark"] .tabs {
+  background: #1A1D27;
+  border-bottom-color: #2D3142;
+}
+[data-theme="dark"] .tab-btn {
+  color: #64748B;
+}
+[data-theme="dark"] .tab-btn.active {
+  color: var(--orange);
+  border-bottom-color: var(--orange);
+}
+[data-theme="dark"] .order-card {
+  background: #1A1D27;
+  border-color: #2D3142;
+}
+[data-theme="dark"] .oc-prod-row {
+  border-bottom-color: #2D3142;
+}
+[data-theme="dark"] .oc-prod-name { color: #F1F5F9; }
+[data-theme="dark"] .oc-empresa { color: #F1F5F9; }
+[data-theme="dark"] .btn-done {
+  background: #0D2818;
+  color: #4ADE80;
+}
+[data-theme="dark"] .btn-edit {
+  background: #0D1F3C;
+  color: #60A5FA;
+}
+[data-theme="dark"] .btn-del {
+  background: #1A1D27;
+  color: #64748B;
+}
+[data-theme="dark"] .btn-reopen {
+  background: #2A1F00;
+  color: #FFA726;
+}
+[data-theme="dark"] .day-col-header {
+  background: #1A1D27;
+  border-color: #2D3142;
+}
+[data-theme="dark"] .day-count-badge {
+  background: #12151E;
+}
+[data-theme="dark"] .empty-slot {
+  background: #1A1D27;
+  border-color: #2D3142;
+  color: #4B5563;
+}
+[data-theme="dark"] .panel-search-bar input {
+  background: #1A1D27 !important;
+  border-color: #2D3142 !important;
+  color: #F1F5F9 !important;
+}
+[data-theme="dark"] .btn-clear-done {
+  background: #1A1D27 !important;
+  border-color: #2D3142;
+  color: #64748B;
+}
+[data-theme="dark"] .day-filter-btn {
+  background: #1A1D27;
+  border-color: #2D3142;
+  color: #64748B;
+}
+[data-theme="dark"] .day-filter-btn.active {
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
+}
+[data-theme="dark"] #panel-summary {
+  background: #1A1D27;
+  border-color: #2D3142;
+}
+[data-theme="dark"] #summary-week,
+[data-theme="dark"] #summary-today,
+[data-theme="dark"] #summary-next { color: #64748B; }
+[data-theme="dark"] .modal {
+  background: #1A1D27;
+  color: #F1F5F9;
+}
+[data-theme="dark"] .modal p,
+[data-theme="dark"] .modal li { color: #64748B; }
+[data-theme="dark"] .modal code {
+  background: #12151E;
+  color: #F1F5F9;
+}
+[data-theme="dark"] #detail-modal,
+[data-theme="dark"] #confirm-overlay > div {
+  background: #1A1D27 !important;
+  color: #F1F5F9;
+}
+[data-theme="dark"] #detail-header,
+[data-theme="dark"] #detail-body {
+  border-color: #2D3142 !important;
+}
+[data-theme="dark"] #detail-title { color: #F1F5F9 !important; }
+[data-theme="dark"] #detail-date { color: #64748B !important; }
+[data-theme="dark"] .oc-notas {
+  background: #12151E;
+  color: #64748B;
+}
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {

@@ -862,22 +862,22 @@ textarea.ac-input {
 /* Toast */
 .toast {
   position: fixed;
-  bottom: 90px;
+  bottom: 30px;
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
+  transform: translateX(-50%) translateY(120px);
   background: var(--navy);
   color: white;
   padding: 12px 24px;
   border-radius: 99px;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 0.85rem;
-  z-index: 500;
+  z-index: 9999;
   pointer-events: none;
   transition: transform .35s cubic-bezier(.34,1.56,.64,1);
   white-space: nowrap;
 }
-.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.show { transform: translateX(-50%) translateY(0) !important; }
 
 .btn-edit {
   padding: 9px 12px;
@@ -1198,8 +1198,10 @@ async function deleteOrder(id) {
 function switchTab(tab) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+  const view = document.getElementById('view-' + tab);
+  const btn = document.getElementById('tab-' + tab);
+  if (view) view.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (tab === 'panel') renderPanel(document.getElementById('panel-search').value || '');
   if (tab === 'historial') renderHistorial(document.getElementById('hist-search').value || '');
 }
@@ -1515,8 +1517,12 @@ async function submitOrder() {
   btn.disabled = false;
   btn.textContent = 'Enviar pedido →';
 
-  toast('✓ Pedido enviado para el ' + DAY_LABELS[order.day]);
-  setTimeout(() => switchTab('panel'), 800);
+  // Go to panel immediately, show success toast there
+  switchTab('panel');
+  // Remove active from form tab, activate panel tab
+  document.getElementById('tab-form').classList.remove('active');
+  document.getElementById('tab-panel').classList.add('active');
+  setTimeout(() => toast('✓ Pedido añadido — ' + DAY_LABELS[order.day]), 100);
 }
 
 // ══════════════════════════════════════════════════
@@ -1880,9 +1886,11 @@ function updateBadge() {
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.classList.remove('show');
+  void t.offsetWidth; // force reflow to restart animation
   t.classList.add('show');
   clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+  t._t = setTimeout(() => { t.classList.remove('show'); }, 2800);
 }
 
 // ══════════════════════════════════════════════════

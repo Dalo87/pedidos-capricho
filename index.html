@@ -1,133 +1,39 @@
-<!DOCTYPE html><!-- v8 -->
-<html lang="es">
+<!DOCTYPE html><!-- v11 -->
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>Pedidos Capricho v10</title>
-
-<!-- PWA -->
 <meta name="application-name" content="Pedidos Capricho">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Capricho">
-<meta name="theme-color" content="#1A1A2E">
-<link rel="manifest" id="pwa-manifest">
-
-<!-- Icon inline (iOS + Android) -->
-<link rel="apple-touch-icon" id="pwa-icon">
-<link rel="icon" type="image/png" id="pwa-favicon">
-
-<script>
-// Generate icon as canvas and inject
-window.addEventListener('DOMContentLoaded', () => {
-  const canvas = document.createElement('canvas');
-  canvas.width = 512; canvas.height = 512;
-  const ctx = canvas.getContext('2d');
-
-  // Background
-  const grad = ctx.createLinearGradient(0, 0, 512, 512);
-  grad.addColorStop(0, '#1A1A2E');
-  grad.addColorStop(1, '#16213E');
-  ctx.fillStyle = grad;
-  roundRect(ctx, 0, 0, 512, 512, 80);
-  ctx.fill();
-
-  // Orange circle accent
-  ctx.fillStyle = '#FF5722';
-  ctx.beginPath();
-  ctx.arc(380, 140, 60, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Letter C
-  ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 300px Helvetica';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('C', 240, 270);
-
-  // Small dot on C
-  ctx.fillStyle = '#FF5722';
-  ctx.beginPath();
-  ctx.arc(370, 200, 28, 0, Math.PI * 2);
-  ctx.fill();
-
-  const dataUrl = canvas.toDataURL('image/png');
-  document.getElementById('pwa-icon').href = dataUrl;
-  document.getElementById('pwa-favicon').href = dataUrl;
-
-  // Inject manifest
-  const manifest = {
-    name: "Pedidos Capricho",
-    short_name: "Capricho",
-    start_url: "./",
-    display: "standalone",
-    background_color: "#1A1A2E",
-    theme_color: "#1A1A2E",
-    orientation: "portrait-primary",
-    icons: [
-      { src: dataUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-  document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
-});
-
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-}
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
-
-<!-- Firebase SDK (compat version - works on all mobile browsers) -->
+<meta name="theme-color" content="#111827">
+<title>Pedidos Capricho</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyCpOkNUimkCbvS5IxykQnBiLdCAfcbFuAk",
-    authDomain: "gestion-de-pedidos-caprichos.firebaseapp.com",
-    databaseURL: "https://gestion-de-pedidos-caprichos-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "gestion-de-pedidos-caprichos",
-    storageBucket: "gestion-de-pedidos-caprichos.firebasestorage.app",
-    messagingSenderId: "689305166642",
-    appId: "1:689305166642:web:e20f56a70914cf2162ad2b"
-  };
-
-  try {
-    firebase.initializeApp(firebaseConfig);
-    const _db = firebase.database();
-
-    window._firebase = {
-      db: _db,
-      ok: true,
-      ref: (db, path) => db.ref(path),
-      push: (ref, data) => ref.push(data),
-      onValue: (ref, cb) => ref.on('value', snap => cb(snap)),
-      update: (ref, data) => ref.update(data),
-      remove: (ref) => ref.remove(),
-      serverTimestamp: () => firebase.database.ServerValue.TIMESTAMP
-    };
-    console.log('Firebase initialized OK');
-  } catch(e) {
-    console.error('Firebase error:', e);
-    window._firebase = { ok: false };
-  }
-
-  window.dispatchEvent(new Event('firebase-ready'));
+const firebaseConfig = {
+  apiKey: "AIzaSyCpOkNUimkCbvS5IxykQnBiLdCAfcbFuAk",
+  authDomain: "gestion-de-pedidos-caprichos.firebaseapp.com",
+  databaseURL: "https://gestion-de-pedidos-caprichos-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "gestion-de-pedidos-caprichos",
+  storageBucket: "gestion-de-pedidos-caprichos.firebasestorage.app",
+  messagingSenderId: "689305166642",
+  appId: "1:689305166642:web:e20f56a70914cf2162ad2b"
+};
+try {
+  firebase.initializeApp(firebaseConfig);
+  const _db = firebase.database();
+  window._firebase = { db: _db, ok: true };
+} catch(e) {
+  window._firebase = { ok: false };
+}
+window.dispatchEvent(new Event('firebase-ready'));
 </script>
-
 <style>
 :root {
   --bg: #F7F6F3;
@@ -138,452 +44,307 @@ function roundRect(ctx, x, y, w, h, r) {
   --teal: #0D9373;
   --teal-pale: #E6F7F2;
   --navy: #111827;
-  --navy2: #1F2937;
   --text: #111827;
   --muted: #6B7280;
   --border: #E5E7EB;
-  --lun: #6366F1;
-  --mar: #0D9373;
-  --mie: #D97706;
-  --jue: #DB2777;
-  --vie: #16A34A;
+  --lun: #6366F1; --mar: #0D9373; --mie: #D97706; --jue: #DB2777; --vie: #16A34A;
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
   --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 20px 40px rgba(0,0,0,0.1);
-  --r: 14px;
-  --r-sm: 9px;
+  --r: 14px; --r-sm: 9px;
 }
 [data-theme="dark"] {
-  --bg: #111318;
-  --white: #1E2130;
-  --orange: #FF7043;
-  --orange-light: #FF8A65;
-  --orange-pale: #3D1F15;
-  --navy: #0B0D14;
-  --text: #E8EAF0;
-  --muted: #8B95A8;
-  --border: #2C3148;
-  --shadow: 0 2px 8px rgba(0,0,0,0.4);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --bg: #111318; --white: #1E2130; --orange: #FF7043; --orange-light: #FF8A65;
+  --orange-pale: #3D1F15; --navy: #0B0D14; --text: #E8EAF0; --muted: #8B95A8;
+  --border: #2C3148; --shadow: 0 2px 8px rgba(0,0,0,0.4); --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
   --teal-pale: #0D2420;
 }
+[data-theme="dark"] body { background:#111318; color:#E8EAF0; }
+[data-theme="dark"] input,[data-theme="dark"] textarea { background:#252A3D!important; color:#E8EAF0!important; border-color:#2C3148!important; }
+[data-theme="dark"] input::placeholder,[data-theme="dark"] textarea::placeholder { color:#5A6478!important; }
+[data-theme="dark"] input:focus,[data-theme="dark"] textarea:focus { border-color:#FF7043!important; background:#2C3148!important; }
+[data-theme="dark"] .topbar { background:#0B0D14; border-bottom-color:#2C3148; }
+[data-theme="dark"] .tabs { background:#1E2130; border-bottom-color:#2C3148; }
+[data-theme="dark"] .tab-btn { color:#8B95A8; }
+[data-theme="dark"] .tab-btn.active { color:#FF7043; border-bottom-color:#FF7043; }
+[data-theme="dark"] .section-card { background:#1E2130; border-color:#2C3148; }
+[data-theme="dark"] .section-title { color:#8B95A8; }
+[data-theme="dark"] .section-title .icon { background:#3D1F15; }
+[data-theme="dark"] .ac-input { background:#252A3D!important; color:#E8EAF0!important; border-color:#2C3148!important; }
+[data-theme="dark"] .ac-dropdown { background:#1E2130; border-color:#2C3148; box-shadow:0 8px 24px rgba(0,0,0,.5); }
+[data-theme="dark"] .ac-item { border-bottom-color:#2C3148; color:#E8EAF0; }
+[data-theme="dark"] .ac-item:hover,[data-theme="dark"] .ac-item.highlighted { background:#3D1F15; color:#FF7043; }
+[data-theme="dark"] .day-pill { background:#252A3D; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .qty-box { background:#252A3D; border-color:#2C3148; }
+[data-theme="dark"] .qty-input { color:#E8EAF0; }
+[data-theme="dark"] .qty-btn { color:#FF7043; }
+[data-theme="dark"] .btn-remove-line { background:#252A3D; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .btn-add-line { border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .btn-add-line:hover { border-color:#FF7043; color:#FF7043; background:#3D1F15; }
+[data-theme="dark"] .incidencia-toggle { background:#2A2210; border-color:#5A4500; color:#FFA726; }
+[data-theme="dark"] .incidencia-body { border-top-color:#5A4500; }
+[data-theme="dark"] #panel-summary { background:#1E2130; border-color:#2C3148; }
+[data-theme="dark"] #summary-count { color:#FF7043; }
+[data-theme="dark"] #summary-week,[data-theme="dark"] #summary-today,[data-theme="dark"] #summary-next { color:#8B95A8; }
+[data-theme="dark"] .search-input-wrap input { background:#1E2130!important; border-color:#2C3148!important; color:#E8EAF0!important; }
+[data-theme="dark"] .btn-clear-done { background:#1E2130!important; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .day-filter-btn { background:#1E2130; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .day-filter-btn.active { background:#FF7043; border-color:#FF7043; color:white; }
+[data-theme="dark"] .day-col-header { background:#1E2130; }
+[data-theme="dark"] .day-count-badge { background:#252A3D; color:#8B95A8; }
+[data-theme="dark"] .empty-slot { background:#1E2130; border-color:#2C3148; color:#5A6478; }
+[data-theme="dark"] .order-card { background:#1E2130; border-color:#2C3148; }
+[data-theme="dark"] .oc-empresa { color:#E8EAF0!important; }
+[data-theme="dark"] .oc-time { color:#8B95A8!important; }
+[data-theme="dark"] .oc-prod-name { color:#E8EAF0!important; }
+[data-theme="dark"] .oc-prod-row { border-bottom-color:#2C3148; }
+[data-theme="dark"] .oc-prod-qty { color:#FF7043!important; background:#3D1F15!important; }
+[data-theme="dark"] .oc-notas { background:#252A3D!important; color:#8B95A8!important; }
+[data-theme="dark"] .oc-incidencia { background:#2A2210!important; border-color:#5A4500!important; }
+[data-theme="dark"] .oc-inc-title { color:#FFA726!important; }
+[data-theme="dark"] .oc-inc-prod { color:#E8EAF0!important; }
+[data-theme="dark"] .btn-done { background:#0D2818; color:#4ADE80; }
+[data-theme="dark"] .btn-reopen { background:#2A2210; color:#FFA726; }
+[data-theme="dark"] .btn-edit { background:#101D36; color:#60A5FA; }
+[data-theme="dark"] .btn-del { background:#252A3D; color:#8B95A8; }
+[data-theme="dark"] .modal-overlay { background:rgba(0,0,0,.8); }
+[data-theme="dark"] .modal { background:#1E2130; color:#E8EAF0; }
+[data-theme="dark"] .modal h2 { color:#E8EAF0; }
+[data-theme="dark"] .modal p,[data-theme="dark"] .modal li { color:#8B95A8; }
+[data-theme="dark"] .modal code { background:#252A3D; color:#E8EAF0; }
+[data-theme="dark"] .btn-local { background:#252A3D; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] #detail-modal { background:#1E2130!important; }
+[data-theme="dark"] #detail-header { border-color:#2C3148!important; }
+[data-theme="dark"] #detail-title { color:#E8EAF0!important; }
+[data-theme="dark"] #detail-date { color:#8B95A8!important; }
+[data-theme="dark"] #hist-grid > div { background:#1E2130!important; border-color:#2C3148!important; }
+[data-theme="dark"] #dark-btn { background:rgba(255,255,255,.06); }
+[data-theme="dark"] .pdf-day-btn { background:#1E2130; border-color:#2C3148; color:#8B95A8; }
 
-/* ── DARK: BASE ── */
-[data-theme="dark"] body { background: #111318; color: #E8EAF0; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; letter-spacing:-0.01em; }
 
-/* ── DARK: INPUTS ── */
-[data-theme="dark"] input,
-[data-theme="dark"] textarea {
-  background: #252A3D !important;
-  color: #E8EAF0 !important;
-  border-color: #2C3148 !important;
-}
-[data-theme="dark"] input::placeholder,
-[data-theme="dark"] textarea::placeholder { color: #5A6478 !important; }
-[data-theme="dark"] input:focus,
-[data-theme="dark"] textarea:focus { border-color: #FF7043 !important; background: #2C3148 !important; }
+/* ── TOPBAR ── */
+.topbar { background:var(--navy); padding:0 20px; display:flex; align-items:center; justify-content:space-between; height:56px; position:sticky; top:0; z-index:200; border-bottom:1px solid rgba(255,255,255,.05); }
+.logo { font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; color:white; font-size:1.1rem; letter-spacing:-0.03em; }
+.logo em { color:var(--orange); font-style:normal; }
+.status-dot { width:8px; height:8px; border-radius:50%; background:#4CAF50; display:inline-block; margin-right:5px; animation:pulse 2s infinite; }
+.status-dot.offline { background:#f44336; animation:none; }
+.status-label { color:rgba(255,255,255,.45); font-size:0.72rem; font-weight:600; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
 
-/* ── DARK: TABS ── */
-[data-theme="dark"] .tabs { background: #1E2130; border-bottom-color: #2C3148; }
-[data-theme="dark"] .tab-btn { color: #8B95A8; background: none; }
-[data-theme="dark"] .tab-btn.active { color: #FF7043; border-bottom-color: #FF7043; }
-[data-theme="dark"] .tab-badge { background: #FF7043; }
+/* ── TABS ── */
+.tabs { background:var(--white); display:flex; border-bottom:1px solid var(--border); position:sticky; top:56px; z-index:190; }
+.tab-btn { flex:1; padding:13px 8px; border:none; background:none; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.82rem; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:5px; }
+.tab-btn.active { color:var(--orange); border-bottom-color:var(--orange); }
+.tab-badge { background:var(--orange); color:white; border-radius:99px; padding:1px 7px; font-size:0.68rem; font-weight:800; }
 
-/* ── DARK: FORM CARDS ── */
-[data-theme="dark"] .section-card { background: #1E2130; border-color: #2C3148; }
-[data-theme="dark"] .section-title { color: #8B95A8; }
-[data-theme="dark"] .section-title .icon { background: #3D1F15; filter: none; }
+/* ── VIEWS ── */
+.view { display:none; }
+.view.active { display:block; }
 
-/* ── DARK: DAY PILLS (form) ── */
-[data-theme="dark"] .day-pill { background: #252A3D; border-color: #2C3148; color: #8B95A8; }
-[data-theme="dark"] .day-pill:hover { border-color: #FF7043; color: #FF7043; }
+/* ── FORM ── */
+.form-wrap { max-width:540px; margin:0 auto; padding:18px 16px 100px; }
+.section-card { background:var(--white); border-radius:var(--r); box-shadow:var(--shadow); padding:20px; margin-bottom:12px; border:1px solid var(--border); }
+.section-title { font-size:0.68rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.section-title .icon { width:26px; height:26px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.85rem; background:var(--orange-pale); }
 
-/* ── DARK: QTY BOX ── */
-[data-theme="dark"] .qty-box { background: #252A3D; border-color: #2C3148; }
-[data-theme="dark"] .qty-input { color: #E8EAF0; background: transparent; }
-[data-theme="dark"] .qty-btn { color: #FF7043; }
+/* ── AUTOCOMPLETE ── */
+.autocomplete-wrap { position:relative; }
+.ac-input { width:100%; padding:13px 15px; border:2px solid var(--border); border-radius:var(--r-sm); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.95rem; font-weight:600; color:var(--text); background:var(--bg); outline:none; transition:border-color .2s; }
+.ac-input:focus { border-color:var(--orange); background:var(--white); }
+.ac-dropdown { position:absolute; top:calc(100% + 5px); left:0; right:0; background:var(--white); border-radius:var(--r-sm); box-shadow:var(--shadow-lg); border:1px solid var(--border); max-height:220px; overflow-y:auto; z-index:300; display:none; }
+.ac-dropdown.open { display:block; }
+.ac-item { padding:11px 15px; cursor:pointer; font-size:0.88rem; font-weight:600; border-bottom:1px solid var(--border); transition:background .15s; }
+.ac-item:last-child { border-bottom:none; }
+.ac-item:hover,.ac-item.highlighted { background:var(--orange-pale); color:var(--orange); }
+.ac-item em { font-style:normal; background:#FFE082; border-radius:3px; padding:0 2px; }
 
-/* ── DARK: BUTTONS ── */
-[data-theme="dark"] .btn-remove-line { background: #252A3D; border-color: #2C3148; color: #8B95A8; }
-[data-theme="dark"] .btn-remove-line:hover { background: #3D1515; border-color: #EF5350; color: #EF5350; }
-[data-theme="dark"] .btn-add-line { border-color: #2C3148; color: #8B95A8; background: transparent; }
-[data-theme="dark"] .btn-add-line:hover { border-color: #FF7043; color: #FF7043; background: #3D1F15; }
-[data-theme="dark"] .btn-submit { background: linear-gradient(135deg, #FF7043, #FF8A65); }
+/* ── PRODUCT LINES ── */
+.product-line { display:flex; gap:8px; align-items:flex-start; margin-bottom:10px; animation:fadeUp .2s ease; }
+.product-ac-wrap { flex:1; position:relative; }
+.qty-box { display:flex; align-items:center; background:var(--bg); border:2px solid var(--border); border-radius:var(--r-sm); overflow:hidden; flex-shrink:0; transition:border-color .2s; }
+.qty-box:focus-within { border-color:var(--orange); }
+.qty-btn { width:36px; height:46px; border:none; background:none; font-size:1.2rem; font-weight:700; color:var(--orange); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .15s; }
+.qty-btn:hover { background:var(--orange-pale); }
+.qty-input { width:44px; border:none; background:none; text-align:center; font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1rem; color:var(--text); padding:0; outline:none; }
+.btn-remove-line { width:40px; height:46px; border-radius:var(--r-sm); border:2px solid var(--border); background:var(--white); color:var(--muted); font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+.btn-remove-line:hover { background:#FFEBEE; border-color:#EF5350; color:#EF5350; }
+.btn-add-line { width:100%; padding:11px; border:2px dashed var(--border); border-radius:var(--r-sm); background:none; color:var(--muted); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.88rem; cursor:pointer; transition:all .2s; margin-top:4px; }
+.btn-add-line:hover { border-color:var(--orange); color:var(--orange); background:var(--orange-pale); }
 
-/* ── DARK: INCIDENCIA ── */
-[data-theme="dark"] .incidencia-toggle { background: #2A2210; border-color: #5A4500; color: #FFA726; }
-[data-theme="dark"] .incidencia-body { border-top-color: #5A4500; }
+/* ── DAY PILLS ── */
+.days-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+.day-pill { padding:12px 4px; border-radius:12px; border:2px solid var(--border); background:var(--white); text-align:center; cursor:pointer; transition:all .2s; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.75rem; color:var(--muted); }
+.day-pill:hover { border-color:var(--orange-light); color:var(--orange); }
+.day-pill.sel-LUN { border-color:var(--lun); background:#EDE7F6; color:var(--lun); }
+.day-pill.sel-MAR { border-color:var(--mar); background:var(--teal-pale); color:var(--mar); }
+.day-pill.sel-MIE { border-color:var(--mie); background:#FFF8E1; color:var(--mie); }
+.day-pill.sel-JUE { border-color:var(--jue); background:#FCE4EC; color:var(--jue); }
+.day-pill.sel-VIE { border-color:var(--vie); background:#F1F8E9; color:var(--vie); }
 
-/* ── DARK: AUTOCOMPLETE ── */
-[data-theme="dark"] .ac-dropdown { background: #1E2130; border-color: #2C3148; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-[data-theme="dark"] .ac-item { border-bottom-color: #2C3148; color: #E8EAF0; }
-[data-theme="dark"] .ac-item:hover,
-[data-theme="dark"] .ac-item.highlighted { background: #3D1F15; color: #FF7043; }
+/* ── INCIDENCIA ── */
+.incidencia-toggle { display:flex; align-items:center; gap:10px; padding:13px 15px; background:#FFF8E1; border:2px solid #FFE082; border-radius:var(--r-sm); cursor:pointer; font-weight:700; font-size:0.88rem; color:#F57F17; transition:all .2s; user-select:none; }
+.incidencia-toggle .arrow { margin-left:auto; transition:transform .2s; }
+.incidencia-toggle.open .arrow { transform:rotate(180deg); }
+.incidencia-body { display:none; margin-top:12px; padding-top:12px; border-top:1px solid #FFE082; }
+.incidencia-body.open { display:block; }
+.inc-day-pills { display:flex; gap:6px; flex-wrap:wrap; }
+.inc-day-pill { padding:7px 13px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.72rem; cursor:pointer; transition:all .15s; color:var(--muted); }
+.inc-day-pill.sel { border-color:#FFA726; background:#FFF8E1; color:#E65100; }
 
-/* ── DARK: PANEL SUMMARY ── */
-[data-theme="dark"] #panel-summary { background: #1E2130; border-color: #2C3148; }
-[data-theme="dark"] #summary-count { color: #FF7043; }
-[data-theme="dark"] #summary-week,
-[data-theme="dark"] #summary-today,
-[data-theme="dark"] #summary-next { color: #8B95A8; }
+/* ── SUBMIT ── */
+.btn-submit { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); width:calc(100% - 32px); max-width:508px; padding:17px; background:linear-gradient(135deg,var(--orange),var(--orange-light)); color:white; border:none; border-radius:var(--r); font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 8px 28px rgba(232,68,10,.35); transition:all .2s; z-index:150; }
+.btn-submit:hover { transform:translateX(-50%) translateY(-2px); }
+.btn-submit:disabled { background:var(--muted); box-shadow:none; cursor:not-allowed; }
 
-/* ── DARK: SEARCH BAR ── */
-[data-theme="dark"] .search-input-wrap input { background: #1E2130 !important; border-color: #2C3148 !important; color: #E8EAF0 !important; }
-[data-theme="dark"] .search-icon { color: #8B95A8; }
-[data-theme="dark"] .btn-clear-done { background: #1E2130 !important; border-color: #2C3148; color: #8B95A8; }
-[data-theme="dark"] .btn-clear-done:hover { border-color: #EF5350; color: #EF5350; background: #2A1515 !important; }
+/* ── PANEL ── */
+.panel-wrap { padding:14px 16px; }
+.panel-search-bar { display:flex; gap:8px; margin-bottom:12px; align-items:center; }
+.search-input-wrap { flex:1; position:relative; }
+.search-input-wrap input { width:100%; padding:11px 15px 11px 40px; border:2px solid var(--border); border-radius:var(--r-sm); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.92rem; font-weight:600; background:var(--white); outline:none; transition:border-color .2s; color:var(--text); }
+.search-input-wrap input:focus { border-color:var(--orange); }
+.search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:0.95rem; pointer-events:none; }
+.btn-clear-done { padding:11px 13px; border-radius:var(--r-sm); border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:700; cursor:pointer; color:var(--muted); white-space:nowrap; transition:all .2s; }
+.btn-clear-done:hover { border-color:#EF5350; color:#EF5350; }
 
-/* ── DARK: DAY FILTER PILLS ── */
-[data-theme="dark"] .day-filter-btn { background: #1E2130; border-color: #2C3148; color: #8B95A8; }
-[data-theme="dark"] .day-filter-btn:hover { border-color: #FF7043; color: #FF7043; }
-[data-theme="dark"] .day-filter-btn.active { background: #FF7043; border-color: #FF7043; color: white; }
+.day-filter-btn { padding:7px 13px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.74rem; cursor:pointer; color:var(--muted); transition:all .2s; white-space:nowrap; }
+.day-filter-btn:hover { border-color:var(--orange); color:var(--orange); }
+.day-filter-btn.active { background:var(--orange); border-color:var(--orange); color:white; }
 
-/* ── DARK: WEEK COLUMNS ── */
-[data-theme="dark"] .day-col-header { background: #1E2130; border-left-width: 4px; }
-[data-theme="dark"] .day-count-badge { background: #252A3D; color: #8B95A8; }
-[data-theme="dark"] .empty-slot { background: #1E2130; border-color: #2C3148; color: #5A6478; }
+/* ── WEEK GRID ── */
+.week-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+.day-col { display:flex; flex-direction:column; gap:10px; }
+.day-col-header { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-radius:var(--r-sm); background:var(--white); box-shadow:var(--shadow); border-left:4px solid transparent; }
+.col-LUN .day-col-header { border-left-color:var(--lun); }
+.col-MAR .day-col-header { border-left-color:var(--mar); }
+.col-MIE .day-col-header { border-left-color:var(--mie); }
+.col-JUE .day-col-header { border-left-color:var(--jue); }
+.col-VIE .day-col-header { border-left-color:var(--vie); }
+.day-col-header h3 { font-size:0.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+.col-LUN .day-col-header h3 { color:var(--lun); }
+.col-MAR .day-col-header h3 { color:var(--mar); }
+.col-MIE .day-col-header h3 { color:var(--mie); }
+.col-JUE .day-col-header h3 { color:var(--jue); }
+.col-VIE .day-col-header h3 { color:var(--vie); }
+.day-count-badge { font-size:0.7rem; font-weight:800; border-radius:99px; padding:2px 9px; background:var(--bg); color:var(--muted); }
 
-/* ── DARK: ORDER CARDS ── */
-[data-theme="dark"] .order-card { background: #1E2130; border-color: #2C3148; }
-[data-theme="dark"] .order-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-[data-theme="dark"] .oc-empresa { color: #E8EAF0 !important; }
-[data-theme="dark"] .oc-time { color: #8B95A8 !important; }
-[data-theme="dark"] .oc-prod-name { color: #E8EAF0 !important; }
-[data-theme="dark"] .oc-prod-row { border-bottom-color: #2C3148; }
-[data-theme="dark"] .oc-prod-qty { color: #FF7043 !important; background: #3D1F15 !important; }
-[data-theme="dark"] .oc-notas { background: #252A3D !important; color: #8B95A8 !important; }
-[data-theme="dark"] .oc-incidencia { background: #2A2210 !important; border-color: #5A4500 !important; }
-[data-theme="dark"] .oc-inc-title { color: #FFA726 !important; }
-[data-theme="dark"] .oc-inc-prod { color: #E8EAF0 !important; }
-[data-theme="dark"] .oc-inc-day { color: #8B95A8 !important; }
-
-/* ── DARK: CARD BUTTONS ── */
-[data-theme="dark"] .btn-done { background: #0D2818; color: #4ADE80; }
-[data-theme="dark"] .btn-done:hover { background: #153D24; }
-[data-theme="dark"] .btn-reopen { background: #2A2210; color: #FFA726; }
-[data-theme="dark"] .btn-reopen:hover { background: #3D3215; }
-[data-theme="dark"] .btn-edit { background: #101D36; color: #60A5FA; }
-[data-theme="dark"] .btn-edit:hover { background: #162848; }
-[data-theme="dark"] .btn-del { background: #252A3D; color: #8B95A8; }
-[data-theme="dark"] .btn-del:hover { background: #2A1515; color: #EF5350; }
-
-/* ── DARK: INCIDENCIA BADGE ON CARD ── */
-[data-theme="dark"] .order-card [style*="INCIDENCIA REPROGRAMADA"] { background: #3D2E00 !important; color: #FFA726 !important; }
-
-/* ── DARK: MODALS ── */
-[data-theme="dark"] .modal { background: #1E2130 !important; color: #E8EAF0; }
-[data-theme="dark"] .modal h2 { color: #E8EAF0; }
-[data-theme="dark"] .modal p, [data-theme="dark"] .modal li { color: #8B95A8; }
-[data-theme="dark"] .modal code { background: #252A3D; color: #E8EAF0; }
-[data-theme="dark"] .btn-local { background: #252A3D; border-color: #2C3148; color: #8B95A8; }
-
-[data-theme="dark"] #detail-modal { background: #1E2130 !important; }
-[data-theme="dark"] #detail-header { border-bottom-color: #2C3148 !important; }
-[data-theme="dark"] #detail-title { color: #E8EAF0 !important; }
-[data-theme="dark"] #detail-date { color: #8B95A8 !important; }
-[data-theme="dark"] #detail-body { background: #1E2130; }
-[data-theme="dark"] #detail-body > div > div { border-bottom-color: #2C3148 !important; }
-[data-theme="dark"] #detail-body span:first-child { color: #E8EAF0 !important; }
-[data-theme="dark"] #detail-modal > div:last-child { border-top-color: #2C3148 !important; background: #1E2130; }
-
-/* ── DARK: HISTORIAL CARDS ── */
-[data-theme="dark"] #hist-grid > div { background: #1E2130 !important; border-color: #2C3148 !important; color: #E8EAF0 !important; }
-[data-theme="dark"] #hist-grid > div > div:last-child { border-top-color: #2C3148 !important; }
-[data-theme="dark"] #hist-empty { color: #5A6478; }
-
-/* ── DARK: TOPBAR DARK BTN ── */
-[data-theme="dark"] #dark-btn { background: rgba(255,255,255,.06); color: #E8EAF0; }
-[data-theme="dark"] #dark-btn:hover { background: rgba(255,255,255,.1); }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+/* ── ORDER CARD ── */
+.order-card { background:var(--white); border-radius:var(--r); box-shadow:var(--shadow); border:1px solid var(--border); overflow:hidden; animation:fadeUp .25s ease; transition:all .2s; }
+.order-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-1px); }
+.order-card.done { opacity:.45; transform:scale(.97); }
+.oc-stripe { height:4px; }
+.col-LUN .oc-stripe { background:var(--lun); }
+.col-MAR .oc-stripe { background:var(--mar); }
+.col-MIE .oc-stripe { background:var(--mie); }
+.col-JUE .oc-stripe { background:var(--jue); }
+.col-VIE .oc-stripe { background:var(--vie); }
+.oc-body { padding:13px; }
+.oc-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:9px; }
+.oc-empresa { font-weight:800; font-size:0.88rem; line-height:1.3; flex:1; margin-right:8px; }
+.oc-time { font-size:0.68rem; color:var(--muted); font-weight:600; white-space:nowrap; margin-top:2px; }
+.oc-products { margin-bottom:8px; }
+.oc-prod-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+.oc-prod-row:last-child { border-bottom:none; }
+.oc-prod-name { flex:1; font-weight:600; color:var(--text); margin-right:8px; }
+.oc-prod-qty { font-weight:800; font-size:0.82rem; color:var(--orange); background:var(--orange-pale); border-radius:6px; padding:2px 8px; white-space:nowrap; }
+.oc-incidencia { background:#FFF8E1; border:1px solid #FFE082; border-radius:8px; padding:8px 10px; margin-bottom:8px; font-size:0.78rem; }
+.oc-inc-title { font-weight:800; color:#E65100; margin-bottom:4px; font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em; }
+.oc-inc-prod { color:#7B3F00; font-weight:600; }
+.oc-inc-day { color:var(--muted); font-size:0.7rem; }
+.oc-notas { font-size:0.78rem; color:var(--muted); font-style:italic; margin-bottom:8px; padding:6px 8px; background:var(--bg); border-radius:8px; }
+.oc-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.btn-done { flex:1; padding:8px; border-radius:9px; border:none; background:#E8F5E9; color:#2E7D32; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:800; cursor:pointer; transition:all .2s; }
+.btn-done:hover { background:#C8E6C9; }
+.btn-reopen { flex:1; padding:8px; border-radius:9px; border:none; background:#FFF8E1; color:#E65100; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:800; cursor:pointer; transition:all .2s; }
+.btn-reopen:hover { background:#FFE082; }
+.btn-edit { padding:8px 11px; border-radius:9px; border:none; background:#E3F2FD; color:#1565C0; font-family:'Plus Jakarta Sans',sans-serif; font-size:0.78rem; font-weight:800; cursor:pointer; transition:all .2s; }
+.btn-edit:hover { background:#BBDEFB; }
+.btn-del { width:34px; padding:8px; border-radius:9px; border:none; background:var(--bg); color:var(--muted); font-size:0.82rem; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+.btn-del:hover { background:#FFEBEE; color:#EF5350; }
+.empty-slot { background:var(--white); border:2px dashed var(--border); border-radius:var(--r); padding:18px; text-align:center; color:var(--muted); font-size:0.82rem; font-weight:600; }
 
 /* ── MODALS ── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(17,24,39,.7);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(6px);
-}
-.modal-overlay.hidden { display: none !important; }
-.modal {
-  background: var(--white);
-  border-radius: 20px;
-  padding: 28px;
-  max-width: 480px;
-  width: 100%;
-  box-shadow: var(--shadow-lg);
-  color: var(--text);
-}
-.modal h2 { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
-.modal p { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
-.modal ol { padding-left: 20px; margin-bottom: 16px; }
-.modal li { font-size: 0.85rem; margin-bottom: 8px; line-height: 1.5; color: var(--muted); }
-.modal li strong { color: var(--orange); }
-.modal code { background: var(--bg); border-radius: 6px; padding: 2px 6px; font-family: monospace; font-size: 0.82rem; }
-.btn-local { width:100%; padding:14px; background:var(--bg); border:2px solid var(--border); border-radius:var(--r-sm); font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; color:var(--muted); margin-top:8px; transition:all .2s; }
+.modal-overlay { position:fixed; inset:0; background:rgba(17,24,39,.7); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); }
+.modal-overlay.hidden { display:none!important; }
+.modal { background:var(--white); border-radius:20px; padding:26px; max-width:480px; width:100%; box-shadow:var(--shadow-lg); color:var(--text); }
+.modal h2 { font-weight:800; font-size:1.1rem; margin-bottom:8px; }
+.modal p { font-size:0.88rem; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+.modal ol { padding-left:20px; margin-bottom:14px; }
+.modal li { font-size:0.85rem; margin-bottom:8px; line-height:1.5; color:var(--muted); }
+.modal li strong { color:var(--orange); }
+.modal code { background:var(--bg); border-radius:6px; padding:2px 6px; font-family:monospace; font-size:0.82rem; }
+.btn-local { width:100%; padding:13px; background:var(--bg); border:2px solid var(--border); border-radius:var(--r-sm); font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; color:var(--muted); margin-top:8px; transition:all .2s; }
 .btn-local:hover { border-color:var(--orange); color:var(--orange); }
 
-/* ── ANIMATIONS ── */
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes completeOut {
-  0% { opacity:1; transform:scale(1); }
-  50% { opacity:.6; transform:scale(.97); background:#ECFDF5; }
-  100% { opacity:0; transform:scale(.94) translateY(-4px); }
-}
-.completing { animation: completeOut .5s ease forwards; }
-
 /* ── PDF DAY BUTTONS ── */
-.pdf-day-btn { padding:9px 16px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
+.pdf-day-btn { padding:9px 15px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
 .pdf-day-btn:hover { border-color:var(--orange); color:var(--orange); }
 .pdf-day-btn.sel { background:var(--orange); border-color:var(--orange); color:white; }
 
+/* ── TOAST ── */
+.toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(120px); background:var(--navy); color:white; padding:11px 22px; border-radius:99px; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.82rem; z-index:9999; pointer-events:none; transition:transform .35s cubic-bezier(.34,1.56,.64,1); white-space:nowrap; }
+.toast.show { transform:translateX(-50%) translateY(0)!important; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes completeOut { 0%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.97)}100%{opacity:0;transform:scale(.94) translateY(-4px)} }
+.completing { animation:completeOut .5s ease forwards; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
 </style>
 </head>
 <body>
 
-<!-- Firebase Setup Modal -->
+<!-- Firebase Modal (hidden) -->
 <div class="modal-overlay hidden" id="firebase-modal">
   <div class="modal">
     <h2>🔥 Configura Firebase</h2>
-    <p>Para que el comercial y administración vean los pedidos en tiempo real, necesitas conectar Firebase (gratis). Solo se hace una vez.</p>
-    <ol>
-      <li>Ve a <strong>console.firebase.google.com</strong> → Crear proyecto</li>
-      <li>Activar <strong>Realtime Database</strong> → Crear base de datos → Modo de prueba</li>
-      <li>Proyecto → Configuración → <strong>Tu aplicación web</strong> → Registrar app</li>
-      <li>Copia las credenciales y pégalas en el código (busca <code>TU_API_KEY</code>)</li>
-    </ol>
+    <p>Para usar en tiempo real necesitas conectar Firebase.</p>
     <button class="btn-submit" style="position:static;width:100%;transform:none;max-width:none" onclick="closeModal()">Ya lo configuré → Usar app</button>
     <button class="btn-local" onclick="useLocal()">Usar sin Firebase (solo local)</button>
   </div>
 </div>
 
-<!-- EDIT MODAL -->
+<!-- Edit Modal -->
 <div class="modal-overlay hidden" id="edit-modal">
   <div class="modal" style="max-height:90vh;overflow-y:auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <h2 style="font-size:1.1rem">✏️ Modificar pedido</h2>
-      <button onclick="closeEditModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9E9E9E;line-height:1">×</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h2 style="font-size:1rem">✏️ Modificar pedido</h2>
+      <button onclick="closeEditModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)">×</button>
     </div>
-    <div id="edit-empresa-label" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem;color:#FF5722;margin-bottom:12px;padding:8px 12px;background:#FFF3EF;border-radius:8px"></div>
-
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Productos</div>
+    <div id="edit-empresa-label" style="font-weight:800;font-size:0.85rem;color:var(--orange);margin-bottom:12px;padding:8px 12px;background:var(--orange-pale);border-radius:8px"></div>
+    <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Productos</div>
     <div id="edit-products-list" style="margin-bottom:8px"></div>
     <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
-
-    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9E9E9E;margin-bottom:10px">Notas</div>
-    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px;background:#F5F5F0"></textarea>
-
-    <button onclick="saveEdit()" style="width:100%;padding:14px;background:linear-gradient(135deg,#FF5722,#FF7043);color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer">Guardar cambios</button>
+    <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Notas</div>
+    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px"></textarea>
+    <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--orange),var(--orange-light));color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer">Guardar cambios</button>
   </div>
 </div>
 
-<div class="topbar">
-  <div><div class="logo">PEDIDOS <em>CAPRICHO</em></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.35);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.05em;margin-top:1px">Hecho por Efraín Barba · v10</div></div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <div id="sync-indicator" style="display:none;align-items:center;gap:6px">
-      <div style="width:8px;height:8px;border-radius:50%;border:2px solid var(--orange);border-top-color:transparent;animation:spin .7s linear infinite"></div>
-      <span style="font-size:0.7rem;color:rgba(255,255,255,.4)">Sync…</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:6px">
-      <span class="status-dot" id="status-dot"></span>
-      <span class="status-label" id="status-label">Conectando…</span>
-    </div>
-    <button onclick="toggleDark()" id="dark-btn" title="Modo oscuro"
-      style="background:rgba(255,255,255,.08);border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s">🌙</button>
-  </div>
-</div>
-
-<div class="tabs">
-  <button class="tab-btn active" id="tab-form" onclick="switchTab('form')">📋 Nuevo pedido</button>
-  <button class="tab-btn" id="tab-panel" onclick="switchTab('panel')">📅 Panel <span class="tab-badge" id="badge">0</span></button>
-  <button class="tab-btn" id="tab-historial" onclick="switchTab('historial')">🗂 Historial <span class="tab-badge" style="background:#6B7280" id="hist-badge">0</span></button>
-</div>
-
-<!-- ══════════ FORMULARIO ══════════ -->
-<div class="view active" id="view-form">
-  <div class="form-wrap">
-
-    <!-- Cliente -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">🏢</span>Cliente</div>
-      <div class="autocomplete-wrap">
-        <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
-          oninput="acFilter(this,'ac-clientes','clientes')"
-          onkeydown="acKey(event,'ac-clientes')"
-          onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
-        <div class="ac-dropdown" id="ac-clientes"></div>
-      </div>
-    </div>
-
-    <!-- Productos -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
-      <div id="products-list"></div>
-      <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
-    </div>
-
-    <!-- Día de entrega -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
-      <div class="days-grid" id="days-grid">
-        <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
-        <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
-        <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
-        <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
-        <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
-      </div>
-    </div>
-
-    <!-- Incidencia -->
-    <div class="section-card">
-      <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
-        <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
-        <span class="arrow">▾</span>
-      </div>
-      <div class="incidencia-body" id="inc-body">
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:10px;font-weight:600;">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
-        <div id="inc-lines"></div>
-        <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
-      </div>
-    </div>
-
-    <!-- Notas -->
-    <div class="section-card">
-      <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
-      <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3"></textarea>
-    </div>
-
-    <div style="height:80px"></div>
-  </div>
-  <button class="btn-submit" id="btn-submit" onclick="previewOrder()">Enviar pedido →</button>
-</div>
-
-<!-- ══════════ PANEL SEMANAL ══════════ -->
-<div class="view" id="view-panel">
-  <div class="panel-wrap">
-    <!-- Summary banner -->
-    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:14px;box-shadow:var(--shadow)">
-      <div>
-        <div id="summary-week" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
-          <span style="font-size:0.88rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
-        </div>
-      </div>
-      <div style="text-align:right">
-        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
-        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
-      </div>
-    </div>
-    <div class="panel-search-bar">
-      <div class="search-input-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Buscar cliente, producto…" id="panel-search" oninput="filterPanel(this.value)">
-      </div>
-      <button class="btn-clear-done" onclick="exportPDF()" title="Exportar PDF" style="background:var(--white)">🖨️ PDF</button>
-      <button class="btn-clear-done" id="sound-btn" onclick="toggleSound()" title="Sonido" style="background:var(--white)">🔔</button>
-      <button class="btn-clear-done" onclick="clearDone()" style="background:var(--white)">🗑</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-      <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
-      <button class="day-filter-btn active" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
-      <button class="day-filter-btn" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
-      <button class="day-filter-btn" data-day="LUN" onclick="setDayFilter(this)">Lun</button>
-      <button class="day-filter-btn" data-day="MAR" onclick="setDayFilter(this)">Mar</button>
-      <button class="day-filter-btn" data-day="MIE" onclick="setDayFilter(this)">Mié</button>
-      <button class="day-filter-btn" data-day="JUE" onclick="setDayFilter(this)">Jue</button>
-      <button class="day-filter-btn" data-day="VIE" onclick="setDayFilter(this)">Vie</button>
-    </div>
-    <div class="week-grid" id="week-grid"></div>
-    <div id="done-section" style="display:none;margin-top:20px">
-      <button onclick="toggleDoneDrawer()" id="done-toggle-btn"
-        style="width:100%;padding:12px 18px;background:white;border:2px solid var(--border);border-radius:12px;
-               font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.8rem;color:var(--muted);
-               cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s">
-        <span>✓ Completados — <span id="done-count">0</span> pedido(s)</span>
-        <span id="done-arrow">▾</span>
-      </button>
-      <div id="done-drawer" style="display:none;margin-top:10px">
-        <div class="done-grid" id="done-grid"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ HISTORIAL ══════════ -->
-<div class="view" id="view-historial">
-  <div class="panel-wrap">
-    <!-- Summary banner -->
-    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:14px;box-shadow:var(--shadow)">
-      <div>
-        <div id="summary-week" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
-        <div style="display:flex;align-items:baseline;gap:8px">
-          <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
-          <span style="font-size:0.88rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
-        </div>
-      </div>
-      <div style="text-align:right">
-        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
-        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
-      </div>
-    </div>
-    <div class="panel-search-bar">
-      <div class="search-input-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="Buscar en historial…" id="hist-search" oninput="renderHistorial(this.value)">
-      </div>
-      <button class="btn-clear-done" onclick="clearAllDone()">🗑 Vaciar historial</button>
-    </div>
-    <div id="hist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;"></div>
-    <div id="hist-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted)">
-      <div style="font-size:3rem;margin-bottom:12px">🗂</div>
-      <div style="font-weight:700;font-size:1rem">Sin pedidos completados</div>
-      <div style="font-size:0.85rem;margin-top:6px">Los pedidos marcados como completados aparecerán aquí</div>
-    </div>
-  </div>
-</div>
-
-<!-- PDF OPTIONS MODAL -->
+<!-- PDF Options Modal -->
 <div id="pdf-overlay" onclick="closePdfModal(event)"
   style="display:none;position:fixed;inset:0;background:rgba(17,24,39,.65);z-index:700;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)">
   <div style="background:var(--white);border-radius:20px;padding:0;max-width:400px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden">
-
     <div style="background:linear-gradient(135deg,#1E2130,#2C3148);padding:20px 22px">
       <div style="font-size:0.68rem;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Exportar PDF</div>
       <div style="font-weight:800;font-size:1.05rem;color:white">¿Qué quieres imprimir?</div>
     </div>
-
     <div style="padding:20px 22px">
-
-      <!-- Semana completa -->
-      <div id="pdf-opt-all" onclick="selectPdfOpt('all')"
-        style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:10px;transition:all .2s">
+      <div id="pdf-opt-all" onclick="selectPdfOpt('all')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:10px;transition:all .2s">
         <div style="width:40px;height:40px;border-radius:10px;background:#EEF2FF;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">🗓</div>
-        <div>
-          <div style="font-weight:800;font-size:0.92rem">Semana completa</div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Todos los pedidos pendientes de Lun a Vie</div>
-        </div>
+        <div><div style="font-weight:800;font-size:0.92rem">Semana completa</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Todos los pedidos pendientes</div></div>
         <div id="pdf-check-all" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem"></div>
       </div>
-
-      <!-- Día específico -->
-      <div id="pdf-opt-day" onclick="selectPdfOpt('day')"
-        style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:14px;transition:all .2s">
-        <div style="width:40px;height:40px;border-radius:10px;background:#FEF0EB;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📅</div>
-        <div>
-          <div style="font-weight:800;font-size:0.92rem">Un día concreto</div>
-          <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Elige el día que quieres imprimir</div>
-        </div>
+      <div id="pdf-opt-day" onclick="selectPdfOpt('day')" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;margin-bottom:14px;transition:all .2s">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--orange-pale);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">📅</div>
+        <div><div style="font-weight:800;font-size:0.92rem">Un día concreto</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">Elige el día que quieres imprimir</div></div>
         <div id="pdf-check-day" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.8rem"></div>
       </div>
-
-      <!-- Day selector (hidden by default) -->
       <div id="pdf-day-picker" style="display:none;margin-bottom:14px">
         <div style="font-size:0.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Selecciona el día</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -594,19 +355,15 @@ function roundRect(ctx, x, y, w, h, r) {
           <button class="pdf-day-btn" data-day="VIE" onclick="selectPdfDay(this)">Viernes</button>
         </div>
       </div>
-
       <div style="display:flex;gap:8px">
-        <button onclick="closePdfModal()"
-          style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;color:var(--muted)">Cancelar</button>
-        <button id="pdf-print-btn" onclick="doPrint()" disabled
-          style="flex:2;padding:12px;border-radius:10px;border:none;background:#D1D5DB;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.88rem;cursor:not-allowed;transition:all .2s">🖨️ Imprimir</button>
+        <button onclick="closePdfModal()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;color:var(--muted)">Cancelar</button>
+        <button id="pdf-print-btn" onclick="doPrint()" disabled style="flex:2;padding:12px;border-radius:10px;border:none;background:#D1D5DB;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.88rem;cursor:not-allowed;transition:all .2s">🖨️ Imprimir</button>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- CONFIRM MODAL -->
+<!-- Confirm Modal -->
 <div id="confirm-overlay" onclick="closeConfirm(event)"
   style="display:none;position:fixed;inset:0;background:rgba(17,24,39,.6);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)">
   <div style="background:var(--white);border-radius:20px;padding:0;max-width:400px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden">
@@ -627,9 +384,162 @@ function roundRect(ctx, x, y, w, h, r) {
   </div>
 </div>
 
+<!-- Detail Modal -->
+<div id="detail-overlay" onclick="closeDetail(event)"
+  style="display:none;position:fixed;inset:0;background:rgba(17,24,39,.6);z-index:500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)">
+  <div id="detail-modal" style="background:var(--white);border-radius:20px;padding:0;max-width:440px;width:100%;max-height:85vh;overflow:hidden;box-shadow:var(--shadow-lg);display:flex;flex-direction:column">
+    <div id="detail-header" style="padding:18px 20px 14px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div id="detail-day-badge" style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;padding:3px 10px;border-radius:99px;display:inline-block"></div>
+          <div id="detail-title" style="font-weight:800;font-size:1rem;line-height:1.3"></div>
+          <div id="detail-date" style="font-size:0.75rem;color:var(--muted);margin-top:3px;font-weight:600"></div>
+        </div>
+        <button onclick="document.getElementById('detail-overlay').style.display='none'" style="background:var(--bg);border:none;width:30px;height:30px;border-radius:8px;font-size:1rem;cursor:pointer;color:var(--muted);flex-shrink:0;margin-left:10px">×</button>
+      </div>
+    </div>
+    <div id="detail-body" style="padding:14px 20px;overflow-y:auto;flex:1"></div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px">
+      <button style="flex:1;padding:11px;border-radius:10px;border:none;background:#EEF2FF;color:#4F46E5;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer" onclick="reopenFromDetail()">↩ Mover al Panel</button>
+      <button style="padding:11px 14px;border-radius:10px;border:none;background:#FEF2F2;color:#EF4444;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer" onclick="deleteFromDetail()">🗑 Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <div class="logo">PEDIDOS <em>CAPRICHO</em></div>
+    <div style="font-size:0.58rem;color:rgba(255,255,255,.3);letter-spacing:.04em;margin-top:1px">Hecho por Efraín Barba · v11</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="sync-indicator" style="display:none;align-items:center;gap:5px">
+      <div style="width:8px;height:8px;border-radius:50%;border:2px solid var(--orange);border-top-color:transparent;animation:spin .7s linear infinite"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:5px">
+      <span class="status-dot" id="status-dot"></span>
+      <span class="status-label" id="status-label">Conectando…</span>
+    </div>
+    <button onclick="toggleDark()" id="dark-btn" title="Modo oscuro/claro"
+      style="background:rgba(255,255,255,.08);border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center">🌙</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" id="tab-form" onclick="switchTab('form')">📋 Nuevo pedido</button>
+  <button class="tab-btn" id="tab-panel" onclick="switchTab('panel')">📅 Panel <span class="tab-badge" id="badge">0</span></button>
+  <button class="tab-btn" id="tab-historial" onclick="switchTab('historial')">🗂 Historial <span class="tab-badge" style="background:#6B7280" id="hist-badge">0</span></button>
+</div>
+
+<!-- FORM VIEW -->
+<div class="view active" id="view-form">
+  <div class="form-wrap">
+    <div class="section-card">
+      <div class="section-title"><span class="icon">🏢</span>Cliente</div>
+      <div class="autocomplete-wrap">
+        <input class="ac-input" id="f-empresa" type="text" placeholder="Busca el cliente…" autocomplete="off"
+          oninput="acFilter(this,'ac-clientes','clientes')" onkeydown="acKey(event,'ac-clientes')" onblur="setTimeout(()=>closeAc('ac-clientes'),200)">
+        <div class="ac-dropdown" id="ac-clientes"></div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
+      <div id="products-list"></div>
+      <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
+    </div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
+      <div class="days-grid">
+        <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
+        <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
+        <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
+        <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
+        <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
+        <span>⚠️</span> ¿Hay alguna incidencia con algún producto?
+        <span class="arrow">▾</span>
+      </div>
+      <div class="incidencia-body" id="inc-body">
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:10px;font-weight:600">Indica el producto que falta y cuándo se hará el reparto alternativo:</p>
+        <div id="inc-lines"></div>
+        <button class="btn-add-line" onclick="addIncLine()" style="margin-top:4px">＋ Añadir producto con incidencia</button>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title"><span class="icon">📝</span>Notas (opcional)</div>
+      <textarea class="ac-input" id="f-notas" placeholder="Instrucciones especiales, horario de entrega…" rows="3" style="resize:vertical"></textarea>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+  <button class="btn-submit" id="btn-submit" onclick="previewOrder()">Enviar pedido →</button>
+</div>
+
+<!-- PANEL VIEW -->
+<div class="view" id="view-panel">
+  <div class="panel-wrap">
+    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:12px;box-shadow:var(--shadow)">
+      <div>
+        <div id="summary-week" style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
+          <span style="font-size:0.85rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
+        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+      </div>
+    </div>
+    <div class="panel-search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar cliente, producto…" id="panel-search" oninput="filterPanel(this.value)">
+      </div>
+      <button class="btn-clear-done" onclick="exportPDF()" title="Exportar PDF">🖨️</button>
+      <button class="btn-clear-done" id="sound-btn" onclick="toggleSound()" title="Sonido">🔔</button>
+      <button class="btn-clear-done" onclick="clearDone()" title="Limpiar completados">🗑</button>
+    </div>
+    <div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
+      <button class="day-filter-btn active" data-day="ALL" onclick="setDayFilter(this)">🗓 Semana completa</button>
+      <button class="day-filter-btn" data-day="AUTO" onclick="setDayFilter(this)">📅 Próximo día</button>
+      <button class="day-filter-btn" data-day="LUN" onclick="setDayFilter(this)">Lun</button>
+      <button class="day-filter-btn" data-day="MAR" onclick="setDayFilter(this)">Mar</button>
+      <button class="day-filter-btn" data-day="MIE" onclick="setDayFilter(this)">Mié</button>
+      <button class="day-filter-btn" data-day="JUE" onclick="setDayFilter(this)">Jue</button>
+      <button class="day-filter-btn" data-day="VIE" onclick="setDayFilter(this)">Vie</button>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </div>
+</div>
+
+<!-- HISTORIAL VIEW -->
+<div class="view" id="view-historial">
+  <div class="panel-wrap">
+    <div class="panel-search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar en historial…" id="hist-search" oninput="renderHistorial(this.value)">
+      </div>
+      <button class="btn-clear-done" onclick="clearDone()">🗑 Vaciar</button>
+    </div>
+    <div id="hist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px"></div>
+    <div id="hist-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted)">
+      <div style="font-size:3rem;margin-bottom:12px">🗂</div>
+      <div style="font-weight:700;font-size:1rem">Sin pedidos completados</div>
+      <div style="font-size:0.85rem;margin-top:6px">Los pedidos completados aparecerán aquí</div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+
 // ══════════════════════════════════════════════════
 // DATOS
 // ══════════════════════════════════════════════════
@@ -1804,6 +1714,7 @@ function generatePDF(orders, daysFilter) {
 addProductLine();
 document.getElementById('firebase-modal').classList.add('hidden');
 loadTheme();
+
 </script>
 </body>
 </html>

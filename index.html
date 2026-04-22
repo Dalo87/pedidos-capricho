@@ -152,6 +152,20 @@ function roundRect(ctx, x, y, w, h, r) {
   --r: 14px;
   --r-sm: 9px;
 }
+[data-theme="dark"] {
+  --bg: #0F1117;
+  --white: #1A1D27;
+  --orange: #FF6B35;
+  --orange-light: #FF8C5A;
+  --orange-pale: #2A1810;
+  --navy: #0A0C12;
+  --navy2: #12151E;
+  --text: #F1F5F9;
+  --muted: #64748B;
+  --border: #2D3142;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.3), 0 20px 40px rgba(0,0,0,0.4);
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -893,6 +907,14 @@ textarea.ac-input {
 }
 .btn-edit:hover { background: #BBDEFB; }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes completeOut {
+  0% { opacity:1; transform:scale(1); }
+  50% { opacity:.6; transform:scale(.97); background:#ECFDF5; }
+  100% { opacity:0; transform:scale(.94) translateY(-4px); }
+}
+.completing { animation: completeOut .5s ease forwards; }
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
@@ -938,9 +960,17 @@ textarea.ac-input {
 
 <div class="topbar">
   <div><div class="logo">PEDIDOS <em>CAPRICHO</em></div><div style="font-size:0.6rem;color:rgba(255,255,255,0.35);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.05em;margin-top:1px">Hecho por Efraín Barba</div></div>
-  <div style="display:flex;align-items:center;gap:6px">
-    <span class="status-dot" id="status-dot"></span>
-    <span class="status-label" id="status-label">Conectando…</span>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div id="sync-indicator" style="display:none;align-items:center;gap:6px">
+      <div style="width:8px;height:8px;border-radius:50%;border:2px solid var(--orange);border-top-color:transparent;animation:spin .7s linear infinite"></div>
+      <span style="font-size:0.7rem;color:rgba(255,255,255,.4)">Sync…</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span class="status-dot" id="status-dot"></span>
+      <span class="status-label" id="status-label">Conectando…</span>
+    </div>
+    <button onclick="toggleDark()" id="dark-btn" title="Modo oscuro"
+      style="background:rgba(255,255,255,.08);border:none;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s">🌙</button>
   </div>
 </div>
 
@@ -1006,18 +1036,34 @@ textarea.ac-input {
 
     <div style="height:80px"></div>
   </div>
-  <button class="btn-submit" id="btn-submit" onclick="submitOrder()">Enviar pedido →</button>
+  <button class="btn-submit" id="btn-submit" onclick="previewOrder()">Enviar pedido →</button>
 </div>
 
 <!-- ══════════ PANEL SEMANAL ══════════ -->
 <div class="view" id="view-panel">
   <div class="panel-wrap">
+    <!-- Summary banner -->
+    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:14px;box-shadow:var(--shadow)">
+      <div>
+        <div id="summary-week" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
+          <span style="font-size:0.88rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
+        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+      </div>
+    </div>
     <div class="panel-search-bar">
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
         <input type="text" placeholder="Buscar cliente, producto…" id="panel-search" oninput="filterPanel(this.value)">
       </div>
-      <button class="btn-clear-done" onclick="clearDone()">🗑 Limpiar</button>
+      <button class="btn-clear-done" onclick="exportPDF()" title="Exportar PDF" style="background:var(--white)">🖨️ PDF</button>
+      <button class="btn-clear-done" id="sound-btn" onclick="toggleSound()" title="Sonido" style="background:var(--white)">🔔</button>
+      <button class="btn-clear-done" onclick="clearDone()" style="background:var(--white)">🗑</button>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
       <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Ver:</span>
@@ -1048,6 +1094,20 @@ textarea.ac-input {
 <!-- ══════════ HISTORIAL ══════════ -->
 <div class="view" id="view-historial">
   <div class="panel-wrap">
+    <!-- Summary banner -->
+    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;margin-bottom:14px;box-shadow:var(--shadow)">
+      <div>
+        <div id="summary-week" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
+          <span style="font-size:0.88rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
+        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+      </div>
+    </div>
     <div class="panel-search-bar">
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
@@ -1060,6 +1120,27 @@ textarea.ac-input {
       <div style="font-size:3rem;margin-bottom:12px">🗂</div>
       <div style="font-weight:700;font-size:1rem">Sin pedidos completados</div>
       <div style="font-size:0.85rem;margin-top:6px">Los pedidos marcados como completados aparecerán aquí</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-overlay" onclick="closeConfirm(event)"
+  style="display:none;position:fixed;inset:0;background:rgba(17,24,39,.6);z-index:600;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)">
+  <div style="background:var(--white);border-radius:20px;padding:0;max-width:400px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden">
+    <div style="background:linear-gradient(135deg,var(--orange),var(--orange-light));padding:20px 22px">
+      <div style="font-size:0.7rem;font-weight:800;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Confirmar pedido</div>
+      <div id="confirm-empresa" style="font-weight:800;font-size:1.1rem;color:white"></div>
+      <div id="confirm-day-label" style="font-size:0.82rem;color:rgba(255,255,255,.8);margin-top:2px"></div>
+    </div>
+    <div id="confirm-products" style="padding:16px 22px;border-bottom:1px solid var(--border);max-height:200px;overflow-y:auto"></div>
+    <div id="confirm-inc" style="display:none;padding:10px 22px;border-bottom:1px solid var(--border);background:#FFFBEB">
+      <div style="font-size:0.7rem;font-weight:800;color:#D97706;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">⚠️ Incidencias</div>
+      <div id="confirm-inc-body"></div>
+    </div>
+    <div style="padding:16px 22px;display:flex;gap:8px">
+      <button onclick="closeConfirm()" style="flex:1;padding:12px;border-radius:10px;border:2px solid var(--border);background:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;color:var(--muted)">Editar</button>
+      <button onclick="confirmAndSend()" style="flex:2;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--orange),var(--orange-light));color:white;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.88rem;cursor:pointer">✓ Enviar pedido</button>
     </div>
   </div>
 </div>
@@ -1135,8 +1216,18 @@ function useLocal() {
 function listenOrders() {
   if (useFirebase) {
     const db = window._firebase.db;
+    let firstLoad = true;
     db.ref('pedidos').on('value', snap => {
-      allOrders = snap.val() || {};
+      const newOrders = snap.val() || {};
+      const newPending = Object.values(newOrders).filter(o => !o.done).length;
+      // Play sound only when a new order arrives (not on first load)
+      if (!firstLoad && newPending > lastOrderCount) {
+        playNewOrderSound();
+        if (navigator.vibrate) navigator.vibrate(100);
+      }
+      lastOrderCount = newPending;
+      firstLoad = false;
+      allOrders = newOrders;
       updateBadge();
       updateHistBadge();
       renderPanel(document.getElementById('panel-search').value || '');
@@ -1439,6 +1530,75 @@ function selIncDay(btn) {
 // ══════════════════════════════════════════════════
 // SUBMIT
 // ══════════════════════════════════════════════════
+// Staging area for confirm modal
+let pendingOrderData = null;
+
+function previewOrder() {
+  const empresa = document.getElementById('f-empresa').value.trim();
+  if (!empresa) return toast('⚠️ Escribe el nombre del cliente');
+  if (!selectedDay) return toast('⚠️ Selecciona el día de entrega');
+
+  const prodLines = [...document.querySelectorAll('#products-list .product-line')];
+  const products = [];
+  for (const line of prodLines) {
+    const n = line.querySelector('input[type="text"]')?.value.trim();
+    const q = parseInt(line.querySelector('input[type="number"]')?.value || 1);
+    if (n) products.push({ name: n, qty: q });
+  }
+  if (!products.length) return toast('⚠️ Añade al menos un producto');
+
+  const incidencias = [];
+  if (incOpen) {
+    document.querySelectorAll('#inc-lines > div').forEach(line => {
+      const prod = line.querySelector('input[type="text"]')?.value.trim();
+      const qty = parseInt(line.querySelector('input[type="number"]')?.value || 1);
+      const dayBtn = line.querySelector('.inc-day-pill.sel');
+      if (prod) incidencias.push({ producto: prod, qty, cuando: dayBtn ? dayBtn.dataset.day : '—' });
+    });
+  }
+
+  const notas = document.getElementById('f-notas').value.trim();
+  pendingOrderData = { empresa, products, incidencias, notas, day: selectedDay };
+
+  // Fill confirm modal
+  document.getElementById('confirm-empresa').textContent = empresa;
+  document.getElementById('confirm-day-label').textContent = '📅 Entrega el ' + DAY_LABELS[selectedDay];
+
+  const prodsHtml = products.map(p =>
+    '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">' +
+    '<span style="font-weight:600;font-size:0.88rem">' + p.name + '</span>' +
+    '<span style="font-weight:800;color:var(--orange);font-size:0.82rem;background:var(--orange-pale);padding:2px 8px;border-radius:6px">×' + p.qty + '</span>' +
+    '</div>'
+  ).join('');
+  document.getElementById('confirm-products').innerHTML = prodsHtml;
+
+  if (notas) {
+    document.getElementById('confirm-products').innerHTML += '<div style="margin-top:8px;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:0.8rem;color:var(--muted);font-style:italic">' + notas + '</div>';
+  }
+
+  if (incidencias.length) {
+    document.getElementById('confirm-inc').style.display = 'block';
+    document.getElementById('confirm-inc-body').innerHTML = incidencias.map(i =>
+      '<div style="font-size:0.83rem;font-weight:600">' + i.producto + ' ×' + i.qty + ' → ' + (DAY_LABELS[i.cuando]||i.cuando) + '</div>'
+    ).join('');
+  } else {
+    document.getElementById('confirm-inc').style.display = 'none';
+  }
+
+  document.getElementById('confirm-overlay').style.display = 'flex';
+}
+
+function closeConfirm(e) {
+  if (!e || e.target === document.getElementById('confirm-overlay')) {
+    document.getElementById('confirm-overlay').style.display = 'none';
+  }
+}
+
+async function confirmAndSend() {
+  document.getElementById('confirm-overlay').style.display = 'none';
+  await submitOrder();
+}
+
 async function submitOrder() {
   const empresa = document.getElementById('f-empresa').value.trim();
   if (!empresa) return toast('⚠️ Escribe el nombre del cliente');
@@ -1544,6 +1704,28 @@ function getVisibleDays() {
   return [activeDayFilter];
 }
 
+function updatePanelSummary(orders) {
+  const pending = orders.filter(o => !o.done);
+  document.getElementById('summary-count').textContent = pending.length;
+
+  const now = new Date();
+  const days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  document.getElementById('summary-week').textContent =
+    'Semana del ' + now.getDate() + ' de ' + months[now.getMonth()];
+  document.getElementById('summary-today').textContent =
+    days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
+
+  const next = getNextWorkDay();
+  const nextCount = pending.filter(o => o.day === next).length;
+  document.getElementById('summary-next').textContent =
+    nextCount > 0 ? nextCount + ' pedido(s) para ' + DAY_LABELS[next] : 'Sin pedidos para ' + DAY_LABELS[next];
+}
+
+function showSync(on) {
+  document.getElementById('sync-indicator').style.display = on ? 'flex' : 'none';
+}
+
 function setDayFilter(btn) {
   activeDayFilter = btn.dataset.day;
   document.querySelectorAll('.day-filter-btn').forEach(b => b.classList.remove('active'));
@@ -1555,8 +1737,13 @@ function renderPanel(filter = '') {
   const orders = Object.entries(allOrders).map(([id, o]) => ({...o, id}));
   const q = filter.toLowerCase();
 
+  // Sort by id desc (newest first)
+  orders.sort((a,b) => (b.id||'').localeCompare(a.id||''));
+
   const pending = orders.filter(o => !o.done && matchesFilter(o, q));
   const done = orders.filter(o => o.done && matchesFilter(o, q));
+
+  updatePanelSummary(orders);
 
   const grid = document.getElementById('week-grid');
   grid.innerHTML = '';
@@ -1627,12 +1814,16 @@ function renderHistorial(filter = '') {
     ).join('');
     const more = (o.products||[]).length > 2 ? `<div style="font-size:0.72rem;color:var(--muted)">+${(o.products||[]).length-2} más…</div>` : '';
 
+    // Count total orders this client has done
+    const clientTotal = Object.values(allOrders).filter(x => x.done && x.empresa === o.empresa).length;
+
     card.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <span style="font-size:0.65rem;font-weight:800;color:${color};text-transform:uppercase;letter-spacing:.07em;background:${color}18;padding:3px 9px;border-radius:99px">${DAY_LABELS[o.day]||o.day}</span>
         <span style="font-size:0.7rem;color:var(--muted);font-weight:600">${o.date} · ${o.ts}</span>
       </div>
-      <div style="font-weight:800;font-size:0.92rem;margin-bottom:8px;line-height:1.3">${o.empresa}</div>
+      <div style="font-weight:800;font-size:0.92rem;margin-bottom:4px;line-height:1.3">${o.empresa}</div>
+      <div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px">${clientTotal} pedido(s) completado(s)</div>
       <div style="border-top:1px solid var(--border);padding-top:8px">${prodsPreview}${more}</div>
       ${o.esIncidencia ? '<div style="margin-top:6px;font-size:0.7rem;font-weight:700;color:#D97706;background:#FEF3C7;padding:3px 8px;border-radius:6px;display:inline-block">⚠️ Incidencia reprogramada</div>' : ''}
     `;
@@ -1715,6 +1906,7 @@ function matchesFilter(o, q) {
 function buildCard(order, day) {
   const div = document.createElement('div');
   div.className = 'order-card' + (order.done ? ' done' : '');
+  div.dataset.orderId = order.id;
 
   const incBadge = order.esIncidencia
     ? `<div style="display:inline-block;background:#FFF3CD;color:#E65100;font-size:0.65rem;font-weight:800;padding:2px 8px;border-radius:99px;margin-bottom:6px;letter-spacing:.04em">⚠️ INCIDENCIA REPROGRAMADA</div>`
@@ -1848,10 +2040,27 @@ async function saveEdit() {
 }
 
 async function doUpdate(id, changes) {
-  await updateOrder(id, changes);
-  if (!useFirebase) { renderPanel(); renderHistorial(); updateHistBadge(); }
-  if (changes.done) toast('✓ Completado — ver en Historial');
-  else toast('↩ Pedido reabierto');
+  if (changes.done) {
+    // Animate card out before saving
+    const card = document.querySelector('[data-order-id="' + id + '"]');
+    if (card) {
+      card.classList.add('completing');
+      // Vibrate on mobile
+      if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+      await new Promise(r => setTimeout(r, 480));
+    }
+    showSync(true);
+    await updateOrder(id, changes);
+    showSync(false);
+    if (!useFirebase) { renderPanel(); renderHistorial(); updateHistBadge(); }
+    toast('✓ Completado — guardado en Historial');
+  } else {
+    showSync(true);
+    await updateOrder(id, changes);
+    showSync(false);
+    if (!useFirebase) { renderPanel(); renderHistorial(); updateHistBadge(); }
+    toast('↩ Pedido reabierto');
+  }
 }
 
 async function doDelete(id) {
@@ -1883,6 +2092,12 @@ function updateBadge() {
   document.getElementById('badge').textContent = n;
 }
 
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('sound-btn').textContent = soundEnabled ? '🔔' : '🔕';
+  toast(soundEnabled ? '🔔 Sonido activado' : '🔕 Sonido desactivado');
+}
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1894,10 +2109,109 @@ function toast(msg) {
 }
 
 // ══════════════════════════════════════════════════
+// DARK MODE
+// ══════════════════════════════════════════════════
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('gp_theme', isDark ? 'light' : 'dark');
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem('gp_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('dark-btn').textContent = saved === 'dark' ? '☀️' : '🌙';
+}
+
+// ══════════════════════════════════════════════════
+// SOUND NOTIFICATION
+// ══════════════════════════════════════════════════
+let lastOrderCount = 0;
+let soundEnabled = true;
+
+function playNewOrderSound() {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523, 659, 784]; // C5 E5 G5 — pleasant chord
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.12);
+      gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + i * 0.12 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.4);
+      osc.start(ctx.currentTime + i * 0.12);
+      osc.stop(ctx.currentTime + i * 0.12 + 0.4);
+    });
+  } catch(e) {}
+}
+
+// ══════════════════════════════════════════════════
+// EXPORT PDF
+// ══════════════════════════════════════════════════
+function exportPDF() {
+  const orders = Object.values(allOrders).filter(o => !o.done);
+  if (!orders.length) return toast('No hay pedidos pendientes para exportar');
+
+  const dayColors = {LUN:'#6366F1',MAR:'#0D9373',MIE:'#D97706',JUE:'#DB2777',VIE:'#16A34A'};
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-ES', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; color: #111; padding: 30px; }
+    h1 { font-size: 1.6rem; color: #E8440A; margin-bottom: 4px; }
+    .date { font-size: 0.85rem; color: #6B7280; margin-bottom: 24px; }
+    .day-section { margin-bottom: 24px; }
+    .day-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; padding: 4px 10px; border-radius: 99px; display: inline-block; margin-bottom: 10px; }
+    .order { border: 1px solid #E5E7EB; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; page-break-inside: avoid; }
+    .empresa { font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; }
+    .prod { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 3px 0; border-bottom: 1px solid #F3F4F6; }
+    .qty { font-weight: 800; color: #E8440A; }
+    .notas { font-size: 0.78rem; color: #9CA3AF; font-style: italic; margin-top: 6px; }
+    .inc { background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 6px; padding: 6px 10px; margin-top: 6px; font-size: 0.78rem; }
+    @media print { body { padding: 15px; } }
+  </style></head><body>
+  <h1>PEDIDOS CAPRICHO</h1>
+  <div class="date">Exportado el ${dateStr} — ${orders.length} pedido(s) pendiente(s)</div>`;
+
+  DAYS.forEach(day => {
+    const dayOrders = orders.filter(o => o.day === day);
+    if (!dayOrders.length) return;
+    const color = dayColors[day] || '#6B7280';
+    html += `<div class="day-section">
+      <div class="day-title" style="background:${color}22;color:${color}">${DAY_LABELS[day]}</div>`;
+    dayOrders.forEach(o => {
+      const prods = (o.products||[]).map(p =>
+        `<div class="prod"><span>${p.name}</span><span class="qty">×${p.qty}</span></div>`
+      ).join('');
+      const incHtml = (o.incidencias||[]).length ?
+        `<div class="inc">⚠️ Incidencia: ` + o.incidencias.map(i => i.producto + ' ×' + (i.qty||1) + ' → ' + (DAY_LABELS[i.cuando]||i.cuando)).join(', ') + `</div>` : '';
+      const notasHtml = o.notas ? `<div class="notas">${o.notas}</div>` : '';
+      html += `<div class="order"><div class="empresa">${o.empresa}</div>${prods}${incHtml}${notasHtml}</div>`;
+    });
+    html += '</div>';
+  });
+
+  html += '</body></html>';
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 400);
+}
+
+// ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
 addProductLine();
 document.getElementById('firebase-modal').classList.add('hidden');
+loadTheme();
 </script>
 </body>
 </html>

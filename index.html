@@ -297,12 +297,58 @@ function roundRect(ctx, x, y, w, h, r) {
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17,24,39,.7);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(6px);
+}
+.modal-overlay.hidden { display: none !important; }
+.modal {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+}
+.modal h2 { font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; color: var(--text); }
+.modal p { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.modal ol { padding-left: 20px; margin-bottom: 16px; }
+.modal li { font-size: 0.85rem; margin-bottom: 8px; line-height: 1.5; color: var(--muted); }
+.modal li strong { color: var(--orange); }
+.modal code { background: var(--bg); border-radius: 6px; padding: 2px 6px; font-family: monospace; font-size: 0.82rem; }
+.btn-local { width:100%; padding:14px; background:var(--bg); border:2px solid var(--border); border-radius:var(--r-sm); font-family:'Plus Jakarta Sans',sans-serif; font-weight:800; font-size:0.9rem; cursor:pointer; color:var(--muted); margin-top:8px; transition:all .2s; }
+.btn-local:hover { border-color:var(--orange); color:var(--orange); }
+
+/* ── ANIMATIONS ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes completeOut {
+  0% { opacity:1; transform:scale(1); }
+  50% { opacity:.6; transform:scale(.97); background:#ECFDF5; }
+  100% { opacity:0; transform:scale(.94) translateY(-4px); }
+}
+.completing { animation: completeOut .5s ease forwards; }
+
+/* ── PDF DAY BUTTONS ── */
+.pdf-day-btn { padding:9px 16px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
+.pdf-day-btn:hover { border-color:var(--orange); color:var(--orange); }
+.pdf-day-btn.sel { background:var(--orange); border-color:var(--orange); color:white; }
+
 </style>
 </head>
 <body>
 
 <!-- Firebase Setup Modal -->
-<div class="modal-overlay" id="firebase-modal">
+<div class="modal-overlay hidden" id="firebase-modal">
   <div class="modal">
     <h2>🔥 Configura Firebase</h2>
     <p>Para que el comercial y administración vean los pedidos en tiempo real, necesitas conectar Firebase (gratis). Solo se hace una vez.</p>
@@ -1761,4 +1807,3 @@ loadTheme();
 </script>
 </body>
 </html>
-

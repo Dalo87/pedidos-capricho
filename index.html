@@ -79,7 +79,7 @@ try {
 } catch(e) {
   window._firebase = { ok: false };
 }
-window.dispatchEvent(new Event('firebase-ready'));
+// Don't dispatch event here — main script will poll _firebase directly
 </script>
 <style>
 :root {
@@ -657,7 +657,8 @@ let activeDayFilter = 'ALL'; // AUTO = next working day, ALL = full week, or spe
 // ══════════════════════════════════════════════════
 // FIREBASE INIT
 // ══════════════════════════════════════════════════
-window.addEventListener('firebase-ready', () => {
+// Firebase is initialized synchronously in <head> — just check it directly
+function startApp() {
   const fb = window._firebase;
   if (fb && fb.db) {
     useFirebase = true;
@@ -667,21 +668,7 @@ window.addEventListener('firebase-ready', () => {
     setStatus(false);
     loadLocal();
   }
-});
-
-// Fallback auto-start after 2.5s
-setTimeout(() => {
-  if (!useFirebase) {
-    if (window._firebase && window._firebase.db) {
-      useFirebase = true;
-      setStatus(true);
-      listenOrders();
-    } else {
-      setStatus(false);
-      loadLocal();
-    }
-  }
-}, 2500);
+}
 
 function setStatus(online) {
   document.getElementById('status-dot').className = 'status-dot' + (online ? '' : ' offline');
@@ -705,6 +692,19 @@ function listenOrders() {
   if (useFirebase) {
     const db = window._firebase.db;
     let firstLoad = true;
+    // Load inventario from Firebase
+    db.ref('inventario').once('value', function(snap) {
+      var saved = snap.val();
+      if (saved) {
+        inventario = saved;
+      } else {
+        inventario = buildInventarioFromData();
+        db.ref('inventario').set(inventario);
+      }
+      buildProvFilters();
+      updateInvBadge();
+    });
+
     db.ref('pedidos').on('value', snap => {
       const newOrders = snap.val() || {};
       const newPending = Object.values(newOrders).filter(o => !o.done).length;
@@ -1648,7 +1648,6 @@ function doLogin() {
 }
 
 function showApp() {
-  // App is already visible, just init
   initInventario();
 }
 
@@ -1660,22 +1659,8 @@ let invProvFilter = 'ALL';
 let invShowAlertsOnly = false;
 
 function initInventario() {
-  // Load from Firebase or localStorage
-  if (useFirebase && window._firebase && window._firebase.db) {
-    window._firebase.db.ref('inventario').once('value', function(snap) {
-      var saved = snap.val();
-      if (saved) {
-        inventario = saved;
-      } else {
-        // First time: load from initial data and save to Firebase
-        inventario = buildInventarioFromData();
-        window._firebase.db.ref('inventario').set(inventario);
-      }
-      buildProvFilters();
-      renderInventario();
-      updateInvBadge();
-    });
-  } else {
+  if (!useFirebase) {
+    // Local mode
     var saved = localStorage.getItem('gp_inventario');
     if (saved) {
       try { inventario = JSON.parse(saved); } catch(e) { inventario = buildInventarioFromData(); }
@@ -1684,9 +1669,10 @@ function initInventario() {
       localStorage.setItem('gp_inventario', JSON.stringify(inventario));
     }
     buildProvFilters();
-    renderInventario();
     updateInvBadge();
   }
+  // Firebase mode: inventario is loaded in startApp/listenOrders
+  renderInventario();
 }
 
 function buildInventarioFromData() {
@@ -2224,11 +2210,21 @@ function generatePDF(orders, daysFilter) {
 // ══════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════
-addProductLine();
-document.getElementById('firebase-modal').classList.add('hidden');
 loadTheme();
-// Show login after a brief delay to let Firebase initialize
-setTimeout(initLogin, 300);
+
+function bootApp() {
+  addProductLine();
+  document.getElementById('firebase-modal').classList.add('hidden');
+  startApp();
+  initLogin();
+}
+
+// Start when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootApp);
+} else {
+  bootApp();
+}
 
 </script>
 </body>

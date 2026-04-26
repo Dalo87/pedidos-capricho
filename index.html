@@ -1767,19 +1767,28 @@ function addEditProductLine(name, qty, lote) {
 
 async function saveEdit() {
   if (!editingId) return;
+
+  // Get selected day
+  var dayBtn = document.querySelector('.edit-day-pill[class*="sel-"]');
+  var newDay = dayBtn ? dayBtn.dataset.day : null;
+  if (!newDay) return toast('⚠️ Selecciona el día de entrega');
+
   const lines = [...document.querySelectorAll('#edit-products-list .product-line')];
   const products = [];
-  lines.forEach(line => {
-    const n = line.querySelector('input[type="text"]')?.value.trim();
-    const q = parseInt(line.querySelector('input[type="number"]')?.value || 1);
-    if (n) products.push({ name: n, qty: q });
+  lines.forEach(function(line) {
+    const nameEl = line.querySelector('input[type="text"]');
+    const n = nameEl ? nameEl.value.trim() : '';
+    const q = parseInt((line.querySelector('input[type="number"]') || {}).value || 1);
+    const lote = nameEl ? (nameEl.dataset.lote || null) : null;
+    if (n) products.push({ name: n, qty: q, lote: lote });
   });
   if (!products.length) return toast('⚠️ Añade al menos un producto');
+
   const notas = document.getElementById('edit-notas').value.trim();
-  await updateOrder(editingId, { products, notas });
+  await updateOrder(editingId, { products: products, notas: notas, day: newDay });
   closeEditModal();
   toast('✓ Pedido actualizado');
-  if (!useFirebase) renderPanel();
+  if (!useFirebase) { renderPanel(); renderHistorial(); }
 }
 
 async function doUpdate(id, changes) {

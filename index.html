@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- v11 -->
+<!DOCTYPE html><!-- v12 -->
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Capricho">
 <meta name="theme-color" content="#111827">
-<title>Pedidos Capricho</title>
+<title>Pedidos Capricho v12</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -324,6 +324,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .btn-local:hover { border-color:var(--orange); color:var(--orange); }
 
 /* ── PDF DAY BUTTONS ── */
+.edit-day-pill { padding:10px 4px; border-radius:10px; border:2px solid var(--border); background:var(--white); text-align:center; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.75rem; color:var(--muted); transition:all .2s; }
+.edit-day-pill:hover { border-color:var(--orange-light); color:var(--orange); }
+.edit-day-pill.sel-LUN { border-color:var(--lun); background:#EDE7F6; color:var(--lun); }
+.edit-day-pill.sel-MAR { border-color:var(--mar); background:var(--teal-pale); color:var(--mar); }
+.edit-day-pill.sel-MIE { border-color:var(--mie); background:#FFF8E1; color:var(--mie); }
+.edit-day-pill.sel-JUE { border-color:var(--jue); background:#FCE4EC; color:var(--jue); }
+.edit-day-pill.sel-VIE { border-color:var(--vie); background:#F1F8E9; color:var(--vie); }
+[data-theme="dark"] .edit-day-pill { background:#252A3D; border-color:#2C3148; color:#8B95A8; }
+
 .pdf-day-btn { padding:9px 15px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
 .pdf-day-btn:hover { border-color:var(--orange); color:var(--orange); }
 .pdf-day-btn.sel { background:var(--orange); border-color:var(--orange); color:white; }
@@ -364,18 +373,38 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
 <!-- Edit Modal -->
 <div class="modal-overlay hidden" id="edit-modal">
-  <div class="modal" style="max-height:90vh;overflow-y:auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <h2 style="font-size:1rem">✏️ Modificar pedido</h2>
-      <button onclick="closeEditModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)">×</button>
+  <div class="modal" style="max-height:92vh;overflow-y:auto;padding:0;border-radius:16px">
+
+    <div style="background:linear-gradient(135deg,var(--orange),var(--orange-light));padding:18px 20px;border-radius:14px 14px 0 0">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Modificar pedido</div>
+          <div id="edit-empresa-label" style="font-weight:800;font-size:1rem;color:white"></div>
+        </div>
+        <button onclick="closeEditModal()" style="background:rgba(255,255,255,.2);border:none;width:32px;height:32px;border-radius:8px;font-size:1.1rem;cursor:pointer;color:white">×</button>
+      </div>
     </div>
-    <div id="edit-empresa-label" style="font-weight:800;font-size:0.85rem;color:var(--orange);margin-bottom:12px;padding:8px 12px;background:var(--orange-pale);border-radius:8px"></div>
-    <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Productos</div>
-    <div id="edit-products-list" style="margin-bottom:8px"></div>
-    <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:16px">＋ Añadir producto</button>
-    <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Notas</div>
-    <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px"></textarea>
-    <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--orange),var(--orange-light));color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer">Guardar cambios</button>
+
+    <div style="padding:18px 20px">
+
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📅 Día de entrega</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px">
+        <button class="edit-day-pill" data-day="LUN" onclick="selEditDay(this)">LUN</button>
+        <button class="edit-day-pill" data-day="MAR" onclick="selEditDay(this)">MAR</button>
+        <button class="edit-day-pill" data-day="MIE" onclick="selEditDay(this)">MIÉ</button>
+        <button class="edit-day-pill" data-day="JUE" onclick="selEditDay(this)">JUE</button>
+        <button class="edit-day-pill" data-day="VIE" onclick="selEditDay(this)">VIE</button>
+      </div>
+
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📦 Productos</div>
+      <div id="edit-products-list" style="margin-bottom:8px"></div>
+      <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:18px">＋ Añadir producto</button>
+
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📝 Notas</div>
+      <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px"></textarea>
+
+      <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--orange),var(--orange-light));color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer">Guardar cambios</button>
+    </div>
   </div>
 </div>
 
@@ -872,7 +901,9 @@ function acSelect(dropId, dataset, el) {
     const productDrop = drop.closest('.product-ac-wrap');
     if (productDrop) {
       productDrop.querySelector('.ac-input').value = val;
-      // Show lote selector if product has multiple lotes
+      // Clear previous lote selection
+      delete productDrop.querySelector('.ac-input').dataset.lote;
+      // Show lote selector (works for both form and edit modal)
       showLoteSelector(productDrop, val);
     }
   }
@@ -1629,14 +1660,28 @@ function openEditModal(id) {
   document.getElementById('edit-empresa-label').textContent = order.empresa;
   document.getElementById('edit-notas').value = order.notas || '';
 
+  // Set day pills
+  document.querySelectorAll('.edit-day-pill').forEach(function(b) {
+    b.className = 'edit-day-pill';
+  });
+  if (order.day) {
+    var dayBtn = document.querySelector('.edit-day-pill[data-day="' + order.day + '"]');
+    if (dayBtn) dayBtn.classList.add('sel-' + order.day);
+  }
+
+  // Load products
   const list = document.getElementById('edit-products-list');
   list.innerHTML = '';
   editLineCount = 0;
-
-  (order.products || []).forEach(p => addEditProductLine(p.name, p.qty));
+  (order.products || []).forEach(function(p) { addEditProductLine(p.name, p.qty, p.lote); });
   if (!order.products || !order.products.length) addEditProductLine();
 
   document.getElementById('edit-modal').classList.remove('hidden');
+}
+
+function selEditDay(btn) {
+  document.querySelectorAll('.edit-day-pill').forEach(function(b) { b.className = 'edit-day-pill'; });
+  btn.classList.add('sel-' + btn.dataset.day);
 }
 
 function closeEditModal() {
@@ -1644,27 +1689,80 @@ function closeEditModal() {
   editingId = null;
 }
 
-function addEditProductLine(name = '', qty = 1) {
+function addEditProductLine(name, qty, lote) {
+  name = name || '';
+  qty = qty || 1;
+  lote = lote || null;
   const id = ++editLineCount;
+
   const div = document.createElement('div');
   div.className = 'product-line';
   div.id = 'epl-' + id;
-  div.innerHTML = `
-    <div class="product-ac-wrap">
-      <input class="ac-input" type="text" placeholder="Busca el producto…" value="${name}" autocomplete="off"
-        oninput="acFilter(this,'ac-eprod-${id}','productos')"
-        onkeydown="acKey(event,'ac-eprod-${id}')"
-        onblur="setTimeout(()=>closeAc('ac-eprod-${id}'),200)">
-      <div class="ac-dropdown" id="ac-eprod-${id}"></div>
-    </div>
-    <div class="qty-box">
-      <button class="qty-btn" onclick="changeQty('eqty-${id}',-1)">−</button>
-      <input class="qty-input" id="eqty-${id}" type="number" value="${qty}" min="1">
-      <button class="qty-btn" onclick="changeQty('eqty-${id}',1)">+</button>
-    </div>
-    <button class="btn-remove-line" onclick="document.getElementById('epl-${id}').remove()">✕</button>
-  `;
+
+  const acWrap = document.createElement('div');
+  acWrap.className = 'product-ac-wrap';
+
+  const input = document.createElement('input');
+  input.className = 'ac-input';
+  input.type = 'text';
+  input.placeholder = 'Busca el producto…';
+  input.value = name;
+  input.autocomplete = 'off';
+  if (lote) input.dataset.lote = lote;
+  input.addEventListener('input', function() { acFilter(this, 'ac-eprod-' + id, 'productos'); });
+  input.addEventListener('keydown', function(e) { acKey(e, 'ac-eprod-' + id); });
+  input.addEventListener('blur', function() { setTimeout(function() { closeAc('ac-eprod-' + id); }, 200); });
+  // Override acSelect to also show lote selector
+  input.addEventListener('input', function() {
+    if (!this.value) return;
+    // Will show lote selector after selection via acSelect
+  });
+
+  const drop = document.createElement('div');
+  drop.className = 'ac-dropdown';
+  drop.id = 'ac-eprod-' + id;
+  acWrap.appendChild(input);
+  acWrap.appendChild(drop);
+
+  const qtyBox = document.createElement('div');
+  qtyBox.className = 'qty-box';
+  const btnM = document.createElement('button');
+  btnM.className = 'qty-btn'; btnM.textContent = '−';
+  const qtyInput = document.createElement('input');
+  qtyInput.className = 'qty-input'; qtyInput.id = 'eqty-' + id;
+  qtyInput.type = 'number'; qtyInput.value = qty; qtyInput.min = '1';
+  const btnP = document.createElement('button');
+  btnP.className = 'qty-btn'; btnP.textContent = '+';
+  btnM.addEventListener('click', function() { changeQty('eqty-' + id, -1); });
+  btnP.addEventListener('click', function() { changeQty('eqty-' + id, 1); });
+  qtyBox.appendChild(btnM); qtyBox.appendChild(qtyInput); qtyBox.appendChild(btnP);
+
+  const removeBtn = document.createElement('button');
+  removeBtn.className = 'btn-remove-line'; removeBtn.textContent = '✕';
+  removeBtn.addEventListener('click', function() {
+    var next = div.nextElementSibling;
+    if (next && next.classList.contains('lote-selector')) next.remove();
+    div.remove();
+  });
+
+  div.appendChild(acWrap);
+  div.appendChild(qtyBox);
+  div.appendChild(removeBtn);
   document.getElementById('edit-products-list').appendChild(div);
+
+  // Show stock info if product already has a name
+  if (name) {
+    var inv = invLookup(name);
+    if (inv && inv.lotes && inv.lotes.length > 0) {
+      showLoteSelector(acWrap, name);
+      if (lote) {
+        setTimeout(function() {
+          var btn = document.querySelector('.lote-selector button[data-lote="' + lote + '"]');
+          if (btn) btn.click();
+        }, 50);
+      }
+    }
+  }
 }
 
 async function saveEdit() {

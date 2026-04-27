@@ -657,7 +657,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         <input type="text" placeholder="Buscar producto o proveedor…" id="inv-search" oninput="renderInventario(this.value)">
       </div>
       <button class="btn-clear-done" onclick="filterInvAlerts()" id="inv-alert-btn" title="Solo alertas">⚠️ Alertas</button>
-      <button class="btn-clear-done" onclick="syncExistingOrders()" title="Descontar pedidos actuales del panel" style="white-space:nowrap">🔄 Sincronizar</button>
+      <button class="btn-clear-done" onclick="syncExistingOrders()" title="Descontar pedidos pendientes del panel" style="white-space:nowrap">🔄 Sincronizar panel</button>
+      <button class="btn-clear-done" onclick="recalcularTodoElStock()" title="Recalcular stock descontando TODOS los pedidos (panel + historial)" style="white-space:nowrap;background:#FEF2F2;border-color:#FECACA;color:#DC2626">⚡ Recalcular todo</button>
     </div>
     <div style="margin-bottom:16px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -737,16 +738,16 @@ function listenOrders() {
     db.ref('inventario').once('value', function(snap) {
       var saved = snap.val();
       if (saved) {
-        inventario = saved;
+        // Convert Firebase-safe keys back to original names
+        inventario = inventarioFromFirebase(saved);
       } else {
         inventario = buildInventarioFromData();
-        db.ref('inventario').set(inventario);
+        db.ref('inventario').set(inventarioToFirebase(inventario));
       }
       rebuildNormMap();
       updateAcDataFromInventario();
       buildProvFilters();
       updateInvBadge();
-      // If already on stock tab, render now
       if (document.getElementById('view-inventario') && 
           document.getElementById('view-inventario').classList.contains('active')) {
         renderInventario();
@@ -1945,16 +1946,93 @@ function invLookup(name) {
   return null;
 }
 
+var PRODUCT_ALIASES = {
+  'gilda doble anchoa cubo 40 unidades': 'Gilda Doble Boquerón cubo 40 Uds',
+  'gilda doble anchoa cubo 40 uds': 'Gilda Doble Boquerón cubo 40 Uds',
+  'pavias medianas de bacalao caja 6 kg': 'Pavias Medianas de Bacalao Kg',
+  'gilda boqueron cubo 50 unidades': 'Gilda Boqueron cubo 50 Uds',
+  'anchoa en aceite 000 8 filetes hansa': 'Anchoa en aceite 000 8 Uds Hansa',
+  'chicharron confitado 1500 gr': 'Chicharrón Confitado 1.5 Kg',
+  'chicharron confitado 1500gr': 'Chicharrón Confitado 1.5 Kg',
+  'anchoa cantabrico extra 50 fil': 'Anchoa Cantábrico Extra 50 Uds',
+  'rosquilla casera 2 kg (estuchada 170 unid)': 'Rosquilla Casera 2 Kg - Estuchadas 170 Uds',
+  'anchoa en aceite 00 50 filetes costera': 'Anchoa en aceite 00 50 Uds costera',
+  'tortilitas de camarones (35 unid)': 'Tortillitas de Camarones 35 Uds',
+  'tortillitas de camarones (35 unid)': 'Tortillitas de Camarones 35 Uds',
+  'gilda alegria de anchoa cubo 50 unidades': 'Gilda Alegría de Anchoa cubo 50 Uds',
+  'musker sardina dulce cubo 50 unidades': 'Musker Sardina Alegría cubo 50 Uds',
+  'gilda marinera cubo 50 unidades': 'Gilda Marinera cubo 50 Uds',
+  'pincho queso con cecina tarro 25 unidades': 'Pincho Queso con Cecina tarro 25 Uds',
+  'anchoa en aceite 00 50 unid seleccionada': 'Anchoa en Aceite 00 50 Uds seleccionada',
+  'gilda anchoa cubo 50 unidades': 'Gilda Serrana cubo 50 Uds',
+  'gilda queso con anchoas cubo 50 unidades': 'Gilda Queso con Anchoas cubo 50 Uds',
+  'pringa 1000 gr': 'Pringá 1 Kg',
+  'pringa 1 kg': 'Pringá 1 Kg',
+  'berenjenas rellena de carne (6 unid / bandeja)': 'Berenjenas rellenas de Carne 6 Uds',
+  'berenjenas rellenas de carne (6 unid / bandeja)': 'Berenjenas rellenas de Carne 6 Uds',
+  'flor de alcachofas 15 pz': 'Flor de Alcachofa 15 p confitada en AOVE B40',
+  'sardina ahumada 700 gr': 'Sardina Ahumada 22-25 Uds',
+  'bonito hansa': 'Bonito Hansa',
+  'anchoa hansa 00 normal etiquetadas': 'Anchoa Hansa 00 normal etiquetadas',
+  'anchoa hansa 00 normal trufa': 'Anchoa Hansa 00 normal trufa',
+  'pringá 1000 gr': 'Pringá 1 Kg',
+  'croquetas atun encebollado 35 gr': 'Croquetas Langostino Kimchee 20 Uds 35 gr',
+  'anchoa costera premium 10 filetes lata': 'Anchoa Costera Premium 10 filetes Lata',
+  // Additional aliases from recalcular results
+  'gilda matrimonio cubo 40 unidades': 'Gilda Matrimonio 25 Uds',
+  'gilda matrimonio cubo 40 uds': 'Gilda Matrimonio 25 Uds',
+  'gilda matrimonio 40 uds': 'Gilda Matrimonio 25 Uds',
+  'gilda doble anchoa 40 uds': 'Gilda Doble Boquerón cubo 40 Uds',
+  'boqueron extra oval 600 cc': 'Boquerón en Vinagre Extra Hansa',
+  'boqueron oval cubo': 'Gilda Boqueron cubo 50 Uds',
+  'pata pulpo t1 200-300': 'Pata Pulpo Pasteurizado Congelado 150/200',
+  'torrezno de extremadura a baja temperatura': 'Torrezno de Extremadura Kg',
+  'torrezno de extremadura': 'Torrezno de Extremadura Kg',
+  'torrezno extremadura': 'Torrezno de Extremadura Kg',
+  'pork belly torrezno a baja temp kg': 'Torrezno de Extremadura Kg',
+  'sardina ahumada pandereta 850 gr': 'Sardina Ahumada 22-25 Uds',
+  'anchoa hansa 00 normal etiquetadas': 'Anchoa Hansa 00 normal etiquetadas',
+  'anchoa hansa 00 normal trufa': 'Anchoa Hansa 00 normal trufa',
+  'bonito hansa': 'Bonito Hansa',
+  'musker boqueron alegria 50 uds': 'Musker Anchoa Alegría 50 Uds',
+  'anchoa 00 premium lata': 'Anchoa en Aceite 00 50 Uds seleccionada',
+  'manjar griego sirtaki 50 uds': 'Manjar Griego Sirtaki tarro 7 Uds',
+  'oreja de cerdo baja temperatura en aceite de oliva': 'Oreja de Cerdo Confitada Kg',
+  'ijada de atun 500 g': 'Lata Ventresca Atún Ro 1000',
+  'croqueta carrillada al px': 'Carrillada al Oloroso 1.5 Kg',
+  'croquetas del puchero': 'Croquetas Langostino Kimchee 20 Uds 35 gr',
+  'pulpo cocido entero pequeno 300 a 500 gr': 'Pulpo Entero 275/450 Congelado',
+};
+
 function invKeyLookup(name) {
+  if (!name) return name;
+  // Exact match
   if (inventario[name]) return name;
-  var norm = normalize(name);
-  var original = _invNormMap[norm];
+  // Check alias map first
+  var normName = normalize(name);
+  if (PRODUCT_ALIASES[normName]) {
+    var alias = PRODUCT_ALIASES[normName];
+    if (inventario[alias]) return alias;
+  }
+  // Normalized match
+  var original = _invNormMap[normName];
   if (original && inventario[original]) return original;
+  // Full scan normalized
   var keys = Object.keys(inventario);
   for (var i = 0; i < keys.length; i++) {
-    if (normalize(keys[i]) === norm) return keys[i];
+    if (normalize(keys[i]) === normName) return keys[i];
   }
-  return name; // fallback
+  // Fuzzy: partial word match
+  var clean = name.replace(/\s+/g, ' ').trim();
+  var normClean = normalize(clean);
+  for (var i = 0; i < keys.length; i++) {
+    var kClean = normalize(keys[i].replace(/\s+/g, ' ').trim());
+    if (kClean === normClean) return keys[i];
+    if (kClean.length > 8 && normClean.length > 8) {
+      if (kClean.includes(normClean) || normClean.includes(kClean)) return keys[i];
+    }
+  }
+  return name;
 }
 
 function initInventario() {
@@ -1993,9 +2071,42 @@ function buildInventarioFromData() {
   return inv;
 }
 
+function firebaseKey(name) {
+  // Replace Firebase-invalid characters with safe alternatives
+  return (name || '').replace(/\./g, '_DOT_').replace(/#/g, '_HASH_')
+    .replace(/\$/g, '_DOLLAR_').replace(/\//g, '_SLASH_')
+    .replace(/\[/g, '_LB_').replace(/\]/g, '_RB_');
+}
+
+function firebaseKeyReverse(key) {
+  return (key || '').replace(/_DOT_/g, '.').replace(/_HASH_/g, '#')
+    .replace(/_DOLLAR_/g, '$').replace(/_SLASH_/g, '/')
+    .replace(/_LB_/g, '[').replace(/_RB_/g, ']');
+}
+
+function inventarioToFirebase(inv) {
+  // Convert inventario keys to Firebase-safe keys
+  var safe = {};
+  Object.keys(inv).forEach(function(name) {
+    safe[firebaseKey(name)] = inv[name];
+  });
+  return safe;
+}
+
+function inventarioFromFirebase(data) {
+  // Convert Firebase-safe keys back to original names
+  var inv = {};
+  Object.keys(data).forEach(function(key) {
+    var name = firebaseKeyReverse(key);
+    inv[name] = data[key];
+    inv[name].nombre = name; // ensure nombre is correct
+  });
+  return inv;
+}
+
 function saveInventario() {
   if (useFirebase && window._firebase && window._firebase.db) {
-    window._firebase.db.ref('inventario').set(inventario);
+    window._firebase.db.ref('inventario').set(inventarioToFirebase(inventario));
   } else {
     localStorage.setItem('gp_inventario', JSON.stringify(inventario));
   }
@@ -2222,6 +2333,90 @@ function updateStockMin(nombre, val) {
     updateInvBadge();
   }
 }
+
+function recalcularTodoElStock() {
+  var allPedidos = Object.values(allOrders);
+  if (!allPedidos.length) { alert('No hay pedidos para procesar'); return; }
+  var pendientes = allPedidos.filter(function(o){return !o.done;}).length;
+  var historial = allPedidos.filter(function(o){return o.done;}).length;
+  var lineas = allPedidos.reduce(function(acc,o){return acc+(o.products||[]).length;},0);
+  var msg = 'RECALCULAR TODO EL STOCK\n\n' +
+    '1. Resetear stock al valor del Excel\n' +
+    '2. Descontar TODOS los pedidos:\n' +
+    '   Panel pendientes: ' + pendientes + '\n' +
+    '   Historial entregados: ' + historial + '\n' +
+    '   Total lineas: ' + lineas + '\n\n' +
+    'Continuar?';
+  if (!confirm(msg)) return;
+  _doRecalcular(allPedidos);
+}
+
+function _doRecalcular(allPedidos) {
+  try {
+    inventario = buildInventarioFromData();
+    rebuildNormMap();
+    var deducted = 0;
+    var noMatch = [];
+    var noStock = [];
+
+    allPedidos.forEach(function(o) {
+      (o.products || []).forEach(function(p) {
+        if (!p.name) return;
+        var invKey = invKeyLookup(p.name);
+        var item = inventario[invKey];
+        if (!item) {
+          if (noMatch.indexOf(p.name) === -1) noMatch.push(p.name);
+          return;
+        }
+        var qty = parseFloat(p.qty) || 1;
+        var prev = parseFloat(item.stock) || 0;
+        item.stock = Math.max(0, prev - qty);
+        if (item.lotes && item.lotes.length > 0) {
+          var rem = qty;
+          if (p.lote) {
+            item.lotes.forEach(function(l) {
+              if (l.lote === p.lote && rem > 0) {
+                var t = Math.min(parseFloat(l.stock)||0, rem);
+                l.stock = (parseFloat(l.stock)||0) - t;
+                rem -= t;
+              }
+            });
+          }
+          item.lotes.forEach(function(l) {
+            if (rem <= 0) return;
+            var t = Math.min(parseFloat(l.stock)||0, rem);
+            l.stock = (parseFloat(l.stock)||0) - t;
+            rem -= t;
+          });
+          item.lotes = item.lotes.filter(function(l) { return (parseFloat(l.stock)||0) > 0; });
+        }
+        if (prev < qty) noStock.push(p.name);
+        deducted++;
+      });
+      var oid = o.id || Object.keys(allOrders).find(function(k){return allOrders[k]===o;});
+      if (oid) updateOrder(oid, {stockDeducted: true});
+    });
+
+    localStorage.setItem('gp_inventario', JSON.stringify(inventario));
+    if (window._firebase && window._firebase.db) {
+      window._firebase.db.ref('inventario').set(inventarioToFirebase(inventario));
+    }
+    updateInvBadge();
+    buildProvFilters();
+    renderInventario('');
+
+    var res = 'STOCK RECALCULADO\n\nPedidos: ' + allPedidos.length + '\nLineas descontadas: ' + deducted;
+    if (noMatch.length) res += '\n\nSIN COINCIDENCIA (' + noMatch.length + '):\n' + noMatch.join('\n');
+    if (noStock.length) res += '\n\nSTOCK INSUFICIENTE (' + noStock.length + '):\n' + noStock.slice(0,5).join('\n');
+    alert(res);
+    toast('Stock recalculado: ' + deducted + ' lineas');
+
+  } catch(err) {
+    alert('ERROR: ' + err.message);
+    console.error(err);
+  }
+}
+
 
 function syncExistingOrders() {
   // Only sync orders that haven't been stock-deducted yet

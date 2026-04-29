@@ -324,6 +324,12 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .btn-local:hover { border-color:var(--orange); color:var(--orange); }
 
 /* ── PDF DAY BUTTONS ── */
+.edit-loc-pill { padding:8px 16px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.8rem; cursor:pointer; color:var(--muted); transition:all .2s; }
+.edit-loc-pill:hover { border-color:var(--teal); color:var(--teal); }
+.edit-loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+[data-theme="dark"] .edit-loc-pill { background:#252A3D; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .edit-loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+
 .edit-day-pill { padding:10px 4px; border-radius:10px; border:2px solid var(--border); background:var(--white); text-align:center; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.75rem; color:var(--muted); transition:all .2s; }
 .edit-day-pill:hover { border-color:var(--orange-light); color:var(--orange); }
 .edit-day-pill.sel-LUN { border-color:var(--lun); background:#EDE7F6; color:var(--lun); }
@@ -336,11 +342,26 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 .pdf-day-btn { padding:9px 15px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
 .pdf-day-btn:hover { border-color:var(--orange); color:var(--orange); }
 .pdf-day-btn.sel { background:var(--orange); border-color:var(--orange); color:white; }
+.pdf-ruta-btn { padding:8px 14px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.78rem; cursor:pointer; color:var(--muted); transition:all .15s; }
+.pdf-ruta-btn:hover { border-color:var(--teal); color:var(--teal); }
+.pdf-ruta-btn.sel { background:var(--teal); border-color:var(--teal); color:white; }
+
+.loc-pill { padding:9px 18px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; color:var(--muted); transition:all .2s; }
+.loc-pill:hover { border-color:var(--teal); color:var(--teal); }
+.loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+[data-theme="dark"] .loc-pill { background:#252A3D; border-color:#2C3148; }
+[data-theme="dark"] .loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
 
 .prov-pill { padding:6px 14px; border-radius:99px; border:1.5px solid var(--border); background:var(--bg); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.75rem; cursor:pointer; color:var(--muted); transition:all .15s; white-space:nowrap; }
 .prov-pill:hover { border-color:var(--orange); color:var(--orange); background:var(--orange-pale); }
 .prov-pill.active { background:var(--orange); border-color:var(--orange); color:white; }
-[data-theme="dark"] .prov-pill { background:#1E2130; border-color:#2C3148; color:#8B95A8; }
+[data-theme="dark"] .loc-pill { padding:9px 18px; border-radius:99px; border:2px solid var(--border); background:var(--white); font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; color:var(--muted); transition:all .2s; }
+.loc-pill:hover { border-color:var(--teal); color:var(--teal); }
+.loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+[data-theme="dark"] .loc-pill { background:#252A3D; border-color:#2C3148; }
+[data-theme="dark"] .loc-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+
+.prov-pill { background:#1E2130; border-color:#2C3148; color:#8B95A8; }
 [data-theme="dark"] .prov-pill.active { background:var(--orange); border-color:var(--orange); color:white; }
 
 /* ── TOAST ── */
@@ -387,6 +408,16 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 
     <div style="padding:18px 20px">
 
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📍 Localidad / Ruta</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="edit-loc-pills">
+        <button class="edit-loc-pill" data-loc="Sevilla" onclick="selEditLoc(this)">🏙 Sevilla</button>
+        <button class="edit-loc-pill" data-loc="Cádiz" onclick="selEditLoc(this)">🌊 Cádiz</button>
+        <button class="edit-loc-pill" data-loc="Otra" onclick="selEditLoc(this)">📌 Otra</button>
+        <button class="edit-loc-pill" data-loc="" onclick="selEditLoc(this)">✕ Sin ruta</button>
+      </div>
+      <input id="edit-loc-custom" type="text" placeholder="Escribe la localidad…"
+        style="display:none;margin-top:-10px;margin-bottom:16px;width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none">
+
       <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📅 Día de entrega</div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px">
         <button class="edit-day-pill" data-day="LUN" onclick="selEditDay(this)">LUN</button>
@@ -400,10 +431,86 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <div id="edit-products-list" style="margin-bottom:8px"></div>
       <button class="btn-add-line" onclick="addEditProductLine()" style="margin-bottom:18px">＋ Añadir producto</button>
 
+      <!-- Incidencias -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">⚠️ Incidencias</div>
+      <div id="edit-inc-list" style="margin-bottom:8px"></div>
+      <button type="button" onclick="addEditIncLine()" style="width:100%;padding:9px;border:2px dashed #FDE68A;border-radius:10px;background:#FFFBEB;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;color:#D97706;margin-bottom:16px">＋ Añadir incidencia</button>
+
       <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">📝 Notas</div>
       <textarea id="edit-notas" class="ac-input" rows="2" style="margin-bottom:16px"></textarea>
 
       <button onclick="saveEdit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--orange),var(--orange-light));color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal-overlay hidden" id="add-product-modal">
+  <div class="modal" style="max-height:92vh;overflow-y:auto;padding:0;border-radius:16px;max-width:480px">
+
+    <div style="background:linear-gradient(135deg,#059669,#10B981);padding:18px 20px;border-radius:14px 14px 0 0">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:0.65rem;font-weight:800;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Inventario</div>
+          <div style="font-weight:800;font-size:1rem;color:white">➕ Añadir producto al stock</div>
+        </div>
+        <button onclick="closeAddProductModal()" style="background:rgba(255,255,255,.2);border:none;width:32px;height:32px;border-radius:8px;font-size:1.1rem;cursor:pointer;color:white">×</button>
+      </div>
+    </div>
+
+    <div style="padding:20px">
+
+      <!-- Nombre -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Nombre del producto *</div>
+      <input id="np-nombre" type="text" placeholder="Ej: Anchoa Premium 50 Uds"
+        style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;margin-bottom:14px;background:var(--bg);color:var(--text);outline:none"
+        oninput="this.style.borderColor=this.value?'var(--teal)':'var(--border)'">
+
+      <!-- Proveedor -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Proveedor *</div>
+      <div style="position:relative;margin-bottom:14px">
+        <input id="np-proveedor" type="text" placeholder="Busca o escribe el proveedor…"
+          style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none"
+          oninput="filterProveedorSuggestions(this.value)" autocomplete="off">
+        <div id="np-prov-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:100;max-height:160px;overflow-y:auto"></div>
+      </div>
+
+      <!-- Unidad -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Unidad</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <button id="np-uds-btn" onclick="setNpUnidad('uds')" style="padding:10px;border-radius:10px;border:2px solid var(--orange);background:var(--orange-pale);font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;color:var(--orange)">📦 Unidades</button>
+        <button id="np-kg-btn" onclick="setNpUnidad('Kg')" style="padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;color:var(--muted)">⚖️ Kg (peso)</button>
+      </div>
+
+      <!-- Stock y precio -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Stock inicial *</div>
+          <input id="np-stock" type="number" placeholder="0" min="0" step="0.01"
+            style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none">
+        </div>
+        <div>
+          <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Stock mínimo</div>
+          <input id="np-stockmin" type="number" placeholder="5" min="0"
+            style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none">
+        </div>
+      </div>
+
+      <!-- Precio -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Precio (€)</div>
+      <input id="np-precio" type="number" placeholder="0.00" min="0" step="0.01"
+        style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;margin-bottom:14px;background:var(--bg);color:var(--text);outline:none">
+
+      <!-- Lotes -->
+      <div style="font-size:0.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Lotes</div>
+      <div id="np-lotes-list" style="margin-bottom:8px"></div>
+      <button onclick="addNpLote()" style="width:100%;padding:9px;border:2px dashed var(--border);border-radius:10px;background:none;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;color:var(--muted);margin-bottom:16px">＋ Añadir lote</button>
+
+      <button onclick="saveNewProduct()"
+        style="width:100%;padding:13px;background:linear-gradient(135deg,#059669,#10B981);color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:0.92rem;cursor:pointer">
+        Guardar producto
+      </button>
+
     </div>
   </div>
 </div>
@@ -435,7 +542,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
         </div>
         <div id="pdf-check-summary" style="margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.82rem"></div>
       </div>
-      <div id="pdf-day-picker" style="display:none;margin-bottom:16px">
+      <div id="pdf-day-picker" style="display:none;margin-bottom:12px">
         <div style="font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px">¿Para qué día?</div>
         <div style="display:flex;gap:7px;flex-wrap:wrap">
           <button class="pdf-day-btn" data-day="LUN" onclick="selectPdfDay(this)">Lunes</button>
@@ -443,6 +550,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
           <button class="pdf-day-btn" data-day="MIE" onclick="selectPdfDay(this)">Miércoles</button>
           <button class="pdf-day-btn" data-day="JUE" onclick="selectPdfDay(this)">Jueves</button>
           <button class="pdf-day-btn" data-day="VIE" onclick="selectPdfDay(this)">Viernes</button>
+        </div>
+      </div>
+      <div id="pdf-ruta-picker" style="display:none;margin-bottom:16px">
+        <div style="font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:9px">¿Filtrar por ruta? <span style="font-weight:400;color:var(--muted)">(opcional)</span></div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="pdf-ruta-btn sel" data-ruta="ALL" onclick="selectPdfRuta(this)">🗺 Todas</button>
+          <button class="pdf-ruta-btn" data-ruta="Sevilla" onclick="selectPdfRuta(this)">🏙 Sevilla</button>
+          <button class="pdf-ruta-btn" data-ruta="Cádiz" onclick="selectPdfRuta(this)">🌊 Cádiz</button>
+          <button class="pdf-ruta-btn" data-ruta="Otra" onclick="selectPdfRuta(this)">📌 Otra</button>
         </div>
       </div>
       <div style="display:flex;gap:8px">
@@ -556,6 +672,17 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       </div>
     </div>
     <div class="section-card">
+      <div class="section-title"><span class="icon">📍</span>Localidad / Ruta</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="loc-pill" data-loc="Sevilla" onclick="selLocalidad(this)">🏙 Sevilla</button>
+        <button class="loc-pill" data-loc="Cádiz" onclick="selLocalidad(this)">🌊 Cádiz</button>
+        <button class="loc-pill" data-loc="Otra" onclick="selLocalidad(this)">📌 Otra</button>
+      </div>
+      <input id="loc-custom" type="text" placeholder="Escribe la localidad…"
+        style="display:none;margin-top:10px;width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;background:var(--bg);color:var(--text);outline:none">
+    </div>
+
+    <div class="section-card">
       <div class="section-title"><span class="icon">📦</span>Productos del pedido</div>
       <div id="products-list"></div>
       <button class="btn-add-line" onclick="addProductLine()">＋ Añadir otro producto</button>
@@ -625,6 +752,14 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <button class="day-filter-btn" data-day="JUE" onclick="setDayFilter(this)">Jue</button>
       <button class="day-filter-btn" data-day="VIE" onclick="setDayFilter(this)">Vie</button>
     </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:6px 0 8px">
+      <span style="font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">Ruta:</span>
+      <button class="day-filter-btn active" data-ruta="ALL" onclick="setRutaFilter(this)">🗺 Todas</button>
+      <button class="day-filter-btn" data-ruta="Sevilla" onclick="setRutaFilter(this)">🏙 Sevilla</button>
+      <button class="day-filter-btn" data-ruta="Cádiz" onclick="setRutaFilter(this)">🌊 Cádiz</button>
+      <button class="day-filter-btn" data-ruta="Otra" onclick="setRutaFilter(this)">📌 Otra</button>
+      <button class="day-filter-btn" data-ruta="SIN" onclick="setRutaFilter(this)">❓ Sin ruta</button>
+    </div>
     <div class="week-grid" id="week-grid"></div>
   </div>
 </div>
@@ -659,6 +794,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
       <button class="btn-clear-done" onclick="filterInvAlerts()" id="inv-alert-btn" title="Solo alertas">⚠️ Alertas</button>
       <button class="btn-clear-done" onclick="syncExistingOrders()" title="Descontar pedidos pendientes del panel" style="white-space:nowrap">🔄 Sincronizar panel</button>
       <button class="btn-clear-done" onclick="recalcularTodoElStock()" title="Recalcular stock descontando TODOS los pedidos (panel + historial)" style="white-space:nowrap;background:#FEF2F2;border-color:#FECACA;color:#DC2626">⚡ Recalcular todo</button>
+      <button class="btn-clear-done" onclick="openAddProductModal()" title="Añadir nuevo producto al inventario" style="white-space:nowrap;background:#ECFDF5;border-color:#A7F3D0;color:#059669">＋ Nuevo producto</button>
     </div>
     <div style="margin-bottom:16px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -692,6 +828,8 @@ const DAY_LABELS = { LUN:'Lunes', MAR:'Martes', MIE:'Miércoles', JUE:'Jueves', 
 // STATE
 // ══════════════════════════════════════════════════
 let selectedDay = null;
+let selectedLocalidad = null;
+let activeRutaFilter = 'ALL';
 let useFirebase = false;
 let allOrders = {};
 let activeDayFilter = 'ALL'; // AUTO = next working day, ALL = full week, or specific day
@@ -1036,6 +1174,26 @@ function changeQty(qtyId, delta) {
 // ══════════════════════════════════════════════════
 // DAY SELECTION
 // ══════════════════════════════════════════════════
+function selLocalidad(btn) {
+  document.querySelectorAll('.loc-pill').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  selectedLocalidad = btn.dataset.loc;
+  var custom = document.getElementById('loc-custom');
+  if (selectedLocalidad === 'Otra') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+  }
+}
+
+function setRutaFilter(btn) {
+  document.querySelectorAll('[data-ruta]').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  activeRutaFilter = btn.dataset.ruta;
+  renderPanel(document.getElementById('panel-search').value || '');
+}
+
 function selDay(btn) {
   document.querySelectorAll('.day-pill').forEach(b => b.className = 'day-pill');
   selectedDay = btn.dataset.day;
@@ -1273,12 +1431,20 @@ async function submitOrder() {
   btn.disabled = true;
   btn.textContent = 'Enviando…';
 
+  // Get localidad
+  var localidad = selectedLocalidad;
+  if (localidad === 'Otra') {
+    var customLocEl = document.getElementById('loc-custom');
+    localidad = customLocEl ? customLocEl.value.trim() : 'Otra';
+  }
+
   const order = {
     empresa,
     products,
     incidencias,
     notas,
     day: selectedDay,
+    localidad: localidad || '',
     done: false,
     ts: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),
     date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'})
@@ -1336,6 +1502,10 @@ async function submitOrder() {
   // Reset form
   document.getElementById('f-empresa').value = '';
   document.getElementById('f-notas').value = '';
+  // Reset localidad
+  document.querySelectorAll('.loc-pill').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('loc-custom').style.display = 'none';
+  selectedLocalidad = null;
   // Remove all lote selectors
   document.querySelectorAll('.lote-selector').forEach(el => el.remove());
   document.getElementById('products-list').innerHTML = '';
@@ -1408,7 +1578,19 @@ function renderPanel(filter = '') {
   // Sort by id desc (newest first)
   orders.sort((a,b) => (b.id||'').localeCompare(a.id||''));
 
-  const pending = orders.filter(o => !o.done && matchesFilter(o, q));
+  const pending = orders.filter(o => {
+    if (o.done) return false;
+    if (!matchesFilter(o, q)) return false;
+    // Ruta filter
+    if (activeRutaFilter !== 'ALL') {
+      if (activeRutaFilter === 'SIN') {
+        if (o.localidad) return false;
+      } else {
+        if ((o.localidad || '') !== activeRutaFilter) return false;
+      }
+    }
+    return true;
+  });
   const done = orders.filter(o => o.done && matchesFilter(o, q));
 
   updatePanelSummary(orders);
@@ -1611,7 +1793,7 @@ function buildCard(order, day) {
     <div class="oc-body">
       <div class="oc-header">
         <div>
-          <div class="oc-empresa">${order.empresa}</div>
+          <div class="oc-empresa">${order.empresa}${order.localidad ? `<span style="font-size:0.62rem;font-weight:800;padding:2px 7px;border-radius:99px;background:${'Sevilla'===order.localidad?'#EDE9FE':'Cádiz'===order.localidad?'#D1FAE5':'#F3F4F6'};color:${'Sevilla'===order.localidad?'#6366F1':'Cádiz'===order.localidad?'#059669':'#6B7280'};margin-left:6px">${order.localidad}</span>` : ''}</div>
           <div class="oc-time">${order.date} · ${order.ts}</div>
         </div>
       </div>
@@ -1661,6 +1843,22 @@ function openEditModal(id) {
   document.getElementById('edit-empresa-label').textContent = order.empresa;
   document.getElementById('edit-notas').value = order.notas || '';
 
+  // Set localidad pills
+  document.querySelectorAll('.edit-loc-pill').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('edit-loc-custom').style.display = 'none';
+  if (order.localidad) {
+    var locBtn = document.querySelector('.edit-loc-pill[data-loc="' + order.localidad + '"]');
+    if (locBtn) {
+      locBtn.classList.add('active');
+    } else {
+      // Custom localidad
+      var otraBtn = document.querySelector('.edit-loc-pill[data-loc="Otra"]');
+      if (otraBtn) otraBtn.classList.add('active');
+      document.getElementById('edit-loc-custom').style.display = 'block';
+      document.getElementById('edit-loc-custom').value = order.localidad;
+    }
+  }
+
   // Set day pills
   document.querySelectorAll('.edit-day-pill').forEach(function(b) {
     b.className = 'edit-day-pill';
@@ -1677,12 +1875,98 @@ function openEditModal(id) {
   (order.products || []).forEach(function(p) { addEditProductLine(p.name, p.qty, p.lote); });
   if (!order.products || !order.products.length) addEditProductLine();
 
+  // Load incidencias
+  document.getElementById('edit-inc-list').innerHTML = '';
+  editIncCount = 0;
+  (order.incidencias || []).forEach(function(inc) {
+    addEditIncLine(inc.producto, inc.cuando, inc.qty || 1);
+  });
+
   document.getElementById('edit-modal').classList.remove('hidden');
 }
 
 function selEditDay(btn) {
   document.querySelectorAll('.edit-day-pill').forEach(function(b) { b.className = 'edit-day-pill'; });
   btn.classList.add('sel-' + btn.dataset.day);
+}
+
+function selEditLoc(btn) {
+  document.querySelectorAll('.edit-loc-pill').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  var custom = document.getElementById('edit-loc-custom');
+  if (btn.dataset.loc === 'Otra') {
+    custom.style.display = 'block'; custom.focus();
+  } else {
+    custom.style.display = 'none';
+  }
+}
+
+var editIncCount = 0;
+
+function addEditIncLine(producto, cuando, qty) {
+  producto = producto || '';
+  cuando = cuando || '';
+  qty = qty || 1;
+  var id = ++editIncCount;
+  var div = document.createElement('div');
+  div.id = 'edit-inc-' + id;
+  div.style.cssText = 'background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:10px;padding:10px 12px;margin-bottom:8px';
+
+  // Product input
+  var prodLabel = document.createElement('div');
+  prodLabel.style.cssText = 'font-size:0.7rem;font-weight:700;color:#D97706;margin-bottom:6px';
+  prodLabel.textContent = '⚠️ Producto con incidencia';
+  div.appendChild(prodLabel);
+
+  var prodInput = document.createElement('input');
+  prodInput.type = 'text'; prodInput.value = producto;
+  prodInput.placeholder = 'Producto que falta…';
+  prodInput.style.cssText = 'width:100%;padding:8px 10px;border:1.5px solid #FDE68A;border-radius:8px;font-family:Plus Jakarta Sans,sans-serif;font-size:0.82rem;margin-bottom:8px;background:white;outline:none';
+  div.appendChild(prodInput);
+
+  // Day + qty row
+  var row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+
+  var dayLabel = document.createElement('span');
+  dayLabel.style.cssText = 'font-size:0.72rem;font-weight:700;color:#D97706;white-space:nowrap';
+  dayLabel.textContent = 'Entregar el:';
+  row.appendChild(dayLabel);
+
+  ['LUN','MAR','MIE','JUE','VIE'].forEach(function(d) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.textContent = d; b.dataset.day = d;
+    b.style.cssText = 'padding:5px 10px;border-radius:8px;border:1.5px solid #FDE68A;background:white;font-family:Plus Jakarta Sans,sans-serif;font-weight:700;font-size:0.72rem;cursor:pointer;color:#D97706';
+    if (d === cuando) { b.style.background='#FDE68A'; b.style.borderColor='#D97706'; }
+    b.onclick = function() {
+      div.querySelectorAll('button[data-day]').forEach(function(x) { x.style.background='white'; x.style.borderColor='#FDE68A'; });
+      b.style.background='#FDE68A'; b.style.borderColor='#D97706';
+      b.dataset.selected = '1';
+    };
+    if (d === cuando) b.dataset.selected = '1';
+    row.appendChild(b);
+  });
+
+  // Qty
+  var qtyLabel = document.createElement('span');
+  qtyLabel.style.cssText = 'font-size:0.72rem;font-weight:700;color:#D97706;margin-left:4px;white-space:nowrap';
+  qtyLabel.textContent = 'Cant:';
+  row.appendChild(qtyLabel);
+
+  var qtyInput = document.createElement('input');
+  qtyInput.type='number'; qtyInput.value=qty; qtyInput.min='1';
+  qtyInput.style.cssText = 'width:55px;padding:5px 8px;border:1.5px solid #FDE68A;border-radius:8px;font-family:Plus Jakarta Sans,sans-serif;font-size:0.82rem;background:white;outline:none';
+  row.appendChild(qtyInput);
+
+  // Remove
+  var rem = document.createElement('button');
+  rem.type='button'; rem.textContent='×';
+  rem.style.cssText = 'margin-left:auto;padding:5px 9px;border-radius:8px;border:none;background:#FEF2F2;color:#DC2626;cursor:pointer;font-weight:800';
+  rem.onclick = function() { div.remove(); };
+  row.appendChild(rem);
+
+  div.appendChild(row);
+  document.getElementById('edit-inc-list').appendChild(div);
 }
 
 function closeEditModal() {
@@ -1786,7 +2070,26 @@ async function saveEdit() {
   if (!products.length) return toast('⚠️ Añade al menos un producto');
 
   const notas = document.getElementById('edit-notas').value.trim();
-  await updateOrder(editingId, { products: products, notas: notas, day: newDay });
+
+  // Get localidad
+  var editLocBtn = document.querySelector('.edit-loc-pill.active');
+  var editLocalidad = editLocBtn ? editLocBtn.dataset.loc : '';
+  if (editLocalidad === 'Otra') {
+    editLocalidad = document.getElementById('edit-loc-custom').value.trim() || 'Otra';
+  }
+
+  // Collect incidencias
+  var incidencias = [];
+  document.querySelectorAll('#edit-inc-list > div').forEach(function(div) {
+    var prod = div.querySelector('input[type="text"]').value.trim();
+    var selDay = div.querySelector('button[data-selected="1"]');
+    var qty = parseInt(div.querySelector('input[type="number"]').value) || 1;
+    if (prod && selDay) {
+      incidencias.push({ producto: prod, cuando: selDay.dataset.day, qty: qty });
+    }
+  });
+
+  await updateOrder(editingId, { products: products, notas: notas, day: newDay, incidencias: incidencias, localidad: editLocalidad });
   closeEditModal();
   toast('✓ Pedido actualizado');
   if (!useFirebase) { renderPanel(); renderHistorial(); }
@@ -2664,6 +2967,7 @@ function filterPanel(val) { renderPanel(val); }
 // ══════════════════════════════════════════════════
 var pdfMode = null;
 var pdfDay = null;
+var pdfRuta = 'ALL';
 
 function exportPDF() {
   var orders = Object.values(allOrders).filter(function(o) { return !o.done; });
@@ -2690,7 +2994,11 @@ function selectPdfOpt(opt) {
   });
   document.getElementById('pdf-day-picker').style.display = 'none';
   pdfDay = null;
+  pdfRuta = 'ALL';
   document.querySelectorAll('.pdf-day-btn').forEach(function(b) { b.classList.remove('sel'); });
+  document.querySelectorAll('.pdf-ruta-btn').forEach(function(b) { b.classList.remove('sel'); });
+  var firstRuta = document.querySelector('.pdf-ruta-btn[data-ruta="ALL"]');
+  if (firstRuta) firstRuta.classList.add('sel');
   enablePrintBtn(false);
   if (!opt) return;
   var selEl = document.getElementById('pdf-opt-' + opt);
@@ -2698,6 +3006,12 @@ function selectPdfOpt(opt) {
   if (selEl) { selEl.style.borderColor='var(--orange)'; selEl.style.background='var(--orange-pale)'; }
   if (selCh) { selCh.textContent='✓'; selCh.style.background='var(--orange)'; selCh.style.borderColor='var(--orange)'; selCh.style.color='white'; }
   document.getElementById('pdf-day-picker').style.display = 'block';
+}
+
+function selectPdfRuta(btn) {
+  document.querySelectorAll('.pdf-ruta-btn').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  pdfRuta = btn.dataset.ruta;
 }
 
 function selectPdfDay(btn) {
@@ -2713,6 +3027,9 @@ function enablePrintBtn(on) {
   btn.disabled = !on;
   btn.style.background = on ? 'linear-gradient(135deg,var(--orange),var(--orange-light))' : '#D1D5DB';
   btn.style.cursor = on ? 'pointer' : 'not-allowed';
+  // Show ruta picker when day is selected
+  var rutaPicker = document.getElementById('pdf-ruta-picker');
+  if (rutaPicker) rutaPicker.style.display = on ? 'block' : 'none';
 }
 
 function doPrint() {
@@ -2720,6 +3037,11 @@ function doPrint() {
   var orders = Object.values(allOrders).filter(function(o) { return !o.done; });
   if (!orders.length) return toast('No hay pedidos pendientes');
   if (!pdfDay) return toast('⚠️ Selecciona un día primero');
+  // Filter by ruta if selected
+  if (pdfRuta && pdfRuta !== 'ALL') {
+    orders = orders.filter(function(o) { return (o.localidad || '') === pdfRuta; });
+    if (!orders.length) return toast('No hay pedidos de ' + pdfRuta + ' para ese día');
+  }
   if (pdfMode === 'summary') {
     generateSummaryPDF(orders, pdfDay);
   } else {
@@ -2747,6 +3069,9 @@ function generatePDF(orders, daysFilter) {
   var css = '<style>*{box-sizing:border-box}body{font-family:Segoe UI,sans-serif;color:#111;padding:30px;max-width:800px;margin:0 auto}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;border-bottom:2px solid #E5E7EB;padding-bottom:16px}h1{font-size:1.6rem;color:#E8440A;margin:0 0 4px}.subtitle{font-size:.82rem;color:#6B7280}.meta{text-align:right;font-size:.78rem;color:#6B7280}.day-section{margin-bottom:28px}.day-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:5px 12px;border-radius:99px;display:inline-block;margin-bottom:12px}.order{border:1px solid #E5E7EB;border-radius:10px;padding:14px 16px;margin-bottom:10px;page-break-inside:avoid;border-left:4px solid #E5E7EB}.empresa{font-weight:800;font-size:.98rem;margin-bottom:8px}table{width:100%;border-collapse:collapse}td{padding:4px 0;font-size:.84rem;border-bottom:1px solid #F3F4F6}td:last-child{text-align:right;font-weight:800;color:#E8440A;width:80px}.notas{font-size:.78rem;color:#9CA3AF;font-style:italic;margin-top:8px;padding:6px 10px;background:#F9FAFB;border-radius:6px}.inc{background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:.78rem;color:#92400E}.total-bar{background:#F9FAFB;border-radius:8px;padding:10px 14px;margin-top:20px;font-size:.82rem;color:#6B7280;display:flex;justify-content:space-between}@media print{body{padding:15px}}</style>';
 
   var titleLabel = isSingleDay ? DAY_LABELS[daysFilter[0]] : 'Semana completa';
+  // Group by localidad if filter active
+  var rutaFilterActive = activeRutaFilter !== 'ALL';
+  if (rutaFilterActive) titleLabel += ' · ' + (activeRutaFilter === 'SIN' ? 'Sin ruta' : activeRutaFilter);
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' + css + '</head><body>';
   html += '<div class="header"><div><h1>PEDIDOS CAPRICHO</h1><div class="subtitle">' + titleLabel + '</div></div><div class="meta">Generado el ' + dateStr + '<br><strong>' + filteredOrders.length + ' pedido(s)</strong></div></div>';
 
@@ -2764,7 +3089,8 @@ function generatePDF(orders, daysFilter) {
       }).join('');
       var incHtml = (o.incidencias||[]).length ? '<div class="inc">⚠️ ' + o.incidencias.map(function(i){return i.producto+' ×'+(i.qty||1)+' → '+(DAY_LABELS[i.cuando]||i.cuando);}).join(', ') + '</div>' : '';
       var notasHtml = o.notas ? '<div class="notas">📝 ' + o.notas + '</div>' : '';
-      html += '<div class="order" style="border-left-color:' + color + '"><div class="empresa">' + o.empresa + ' <span style="font-weight:400;font-size:.78rem;color:#9CA3AF">' + o.date + ' · ' + o.ts + '</span></div><table><tbody>' + rows + '</tbody></table>' + incHtml + notasHtml + '</div>';
+      var rutaBadgePdf = o.localidad ? ' <span style="font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:99px;background:#E0F2FE;color:#0369A1">' + o.localidad + '</span>' : '';
+      html += '<div class="order" style="border-left-color:' + color + '"><div class="empresa">' + o.empresa + rutaBadgePdf + ' <span style="font-weight:400;font-size:.78rem;color:#9CA3AF">' + o.date + ' · ' + o.ts + '</span></div><table><tbody>' + rows + '</tbody></table>' + incHtml + notasHtml + '</div>';
     });
     html += '</div>';
   });
@@ -2819,6 +3145,132 @@ function generateSummaryPDF(orders, day) {
   html += '</div></body></html>';
   openBlob(html);
   toast('📊 Resumen de ' + DAY_LABELS[day] + ' abierto — Ctrl+P para imprimir');
+}
+
+// ══════════════════════════════════════════════════
+// ADD PRODUCT MODAL
+// ══════════════════════════════════════════════════
+var npUnidad = 'uds';
+var npLoteCount = 0;
+
+function openAddProductModal() {
+  npUnidad = 'uds';
+  npLoteCount = 0;
+  document.getElementById('np-nombre').value = '';
+  document.getElementById('np-proveedor').value = '';
+  document.getElementById('np-stock').value = '';
+  document.getElementById('np-stockmin').value = '5';
+  document.getElementById('np-precio').value = '';
+  document.getElementById('np-lotes-list').innerHTML = '';
+  setNpUnidad('uds');
+  document.getElementById('add-product-modal').classList.remove('hidden');
+  setTimeout(function() { document.getElementById('np-nombre').focus(); }, 100);
+}
+
+function closeAddProductModal() {
+  document.getElementById('add-product-modal').classList.add('hidden');
+  document.getElementById('np-prov-drop').style.display = 'none';
+}
+
+function setNpUnidad(u) {
+  npUnidad = u;
+  var udsBt = document.getElementById('np-uds-btn');
+  var kgBt = document.getElementById('np-kg-btn');
+  if (u === 'uds') {
+    udsBt.style.borderColor = 'var(--orange)'; udsBt.style.background = 'var(--orange-pale)'; udsBt.style.color = 'var(--orange)';
+    kgBt.style.borderColor = 'var(--border)'; kgBt.style.background = 'var(--bg)'; kgBt.style.color = 'var(--muted)';
+  } else {
+    kgBt.style.borderColor = '#059669'; kgBt.style.background = '#ECFDF5'; kgBt.style.color = '#059669';
+    udsBt.style.borderColor = 'var(--border)'; udsBt.style.background = 'var(--bg)'; udsBt.style.color = 'var(--muted)';
+  }
+}
+
+function filterProveedorSuggestions(q) {
+  var drop = document.getElementById('np-prov-drop');
+  var provs = Array.from(new Set(Object.values(inventario).map(function(p) { return p.proveedor; }))).sort();
+  var matches = q ? provs.filter(function(p) { return normalize(p).includes(normalize(q)); }) : provs;
+  drop.innerHTML = '';
+  if (!matches.length) { drop.style.display = 'none'; return; }
+  matches.slice(0, 8).forEach(function(p) {
+    var div = document.createElement('div');
+    div.textContent = p;
+    div.style.cssText = 'padding:10px 14px;cursor:pointer;font-size:0.85rem;border-bottom:1px solid #E5E7EB';
+    div.onmouseover = function() { this.style.background = '#F9FAFB'; };
+    div.onmouseout = function() { this.style.background = ''; };
+    div.onclick = function() { selectNpProveedor(p); };
+    drop.appendChild(div);
+  });
+  drop.style.display = 'block';
+}
+
+function selectNpProveedor(name) {
+  document.getElementById('np-proveedor').value = name;
+  document.getElementById('np-prov-drop').style.display = 'none';
+}
+
+function addNpLote() {
+  var id = ++npLoteCount;
+  var div = document.createElement('div');
+  div.id = 'np-lote-' + id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 80px 32px;gap:8px;margin-bottom:8px;align-items:center';
+  var inpStyle = 'padding:9px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-family:Plus Jakarta Sans,sans-serif;font-size:0.82rem;outline:none;width:100%';
+  var inp1 = document.createElement('input'); inp1.type='text'; inp1.placeholder='Nº Lote'; inp1.style.cssText = inpStyle;
+  var inp2 = document.createElement('input'); inp2.type='text'; inp2.placeholder='dd/mm/aaaa'; inp2.style.cssText = inpStyle;
+  var inp3 = document.createElement('input'); inp3.type='number'; inp3.placeholder='Stock'; inp3.min='0'; inp3.step='0.01'; inp3.style.cssText = inpStyle;
+  var remBtn = document.createElement('button');
+  remBtn.textContent = '×'; remBtn.type = 'button';
+  remBtn.style.cssText = 'padding:6px 10px;border-radius:8px;border:none;background:#FEF2F2;color:#DC2626;cursor:pointer;font-size:1rem';
+  remBtn.onclick = function() { div.remove(); };
+  div.appendChild(inp1); div.appendChild(inp2); div.appendChild(inp3); div.appendChild(remBtn);
+  document.getElementById('np-lotes-list').appendChild(div);
+}
+
+function saveNewProduct() {
+  var nombre = document.getElementById('np-nombre').value.trim();
+  var proveedor = document.getElementById('np-proveedor').value.trim();
+  var stock = parseFloat(document.getElementById('np-stock').value) || 0;
+  var stockMin = parseInt(document.getElementById('np-stockmin').value) || 5;
+  var precio = parseFloat(document.getElementById('np-precio').value) || 0;
+
+  if (!nombre) { toast('⚠️ El nombre es obligatorio'); return; }
+  if (!proveedor) { toast('⚠️ El proveedor es obligatorio'); return; }
+  if (inventario[nombre]) {
+    if (!confirm('Ya existe un producto con ese nombre. ¿Actualizar su stock sumando ' + stock + ' ' + npUnidad + '?')) return;
+    inventario[nombre].stock += stock;
+    inventario[nombre].stockMin = stockMin;
+  } else {
+    // Collect lotes
+    var lotes = [];
+    document.querySelectorAll('#np-lotes-list > div').forEach(function(div) {
+      var inputs = div.querySelectorAll('input');
+      var loteNum = inputs[0].value.trim();
+      var cad = inputs[1].value.trim();
+      var loteStock = parseFloat(inputs[2].value) || 0;
+      if (loteNum) lotes.push({ lote: loteNum, caducidad: cad, stock: loteStock });
+    });
+
+    inventario[nombre] = {
+      codigo: 'MANUAL-' + Date.now(),
+      nombre: nombre,
+      proveedor: proveedor,
+      precio: precio,
+      stock: stock,
+      stockMin: stockMin,
+      unidad: npUnidad,
+      lotes: lotes,
+      caducidadAlerta: 30,
+      manual: true
+    };
+  }
+
+  saveInventario();
+  rebuildNormMap();
+  updateAcDataFromInventario();
+  buildProvFilters();
+  renderInventario('');
+  updateInvBadge();
+  closeAddProductModal();
+  toast('✅ Producto "' + nombre + '" añadido al inventario');
 }
 
 // ══════════════════════════════════════════════════

@@ -82,6 +82,15 @@ try {
 // Don't dispatch event here — main script will poll _firebase directly
 </script>
 <style>
+@keyframes slideInRight {
+  from { opacity:0; transform:translateX(100px); }
+  to { opacity:1; transform:translateX(0); }
+}
+@keyframes fadeOut {
+  from { opacity:1; transform:translateX(0); }
+  to { opacity:0; transform:translateX(100px); }
+}
+
 :root {
   --bg: #F7F6F3;
   --white: #FFFFFF;
@@ -899,6 +908,16 @@ function listenOrders() {
       if (!firstLoad && newPending > lastOrderCount) {
         playNewOrderSound();
         if (navigator.vibrate) navigator.vibrate(100);
+
+        // Find which orders are new
+        var prevIds = Object.keys(allOrders);
+        var newIds = Object.keys(newOrders).filter(function(id) {
+          return !prevIds.includes(id) && !newOrders[id].done;
+        });
+        newIds.forEach(function(id) {
+          var o = newOrders[id];
+          showNewOrderBanner(o);
+        });
       }
       lastOrderCount = newPending;
       firstLoad = false;
@@ -2890,6 +2909,68 @@ function loadTheme() {
 // ══════════════════════════════════════════════════
 var lastOrderCount = 0;
 var soundEnabled = true;
+
+function showNewOrderBanner(order) {
+  // Create notification banner
+  var banner = document.createElement('div');
+  banner.style.cssText = [
+    'position:fixed',
+    'top:20px',
+    'right:20px',
+    'z-index:9998',
+    'background:linear-gradient(135deg,#1E2130,#2C3148)',
+    'color:white',
+    'border-radius:14px',
+    'padding:14px 18px',
+    'box-shadow:0 8px 32px rgba(0,0,0,.35)',
+    'max-width:320px',
+    'width:calc(100vw - 40px)',
+    'border-left:4px solid var(--orange)',
+    'animation:slideInRight .3s ease',
+    'cursor:pointer'
+  ].join(';');
+
+  var dayLabel = {'LUN':'Lunes','MAR':'Martes','MIE':'Miércoles','JUE':'Jueves','VIE':'Viernes'}[order.day] || order.day;
+  var rutaBadge = order.localidad ? '<span style="background:#E8440A;color:white;font-size:0.65rem;padding:2px 7px;border-radius:99px;margin-left:6px;font-weight:800">' + order.localidad + '</span>' : '';
+  var prodCount = (order.products || []).length;
+  var prodSample = (order.products || []).slice(0,2).map(function(p){return p.name;}).join(', ');
+  if (prodCount > 2) prodSample += ' +' + (prodCount-2) + ' más';
+
+  banner.innerHTML =
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">' +
+      '<div style="flex:1">' +
+        '<div style="font-size:0.65rem;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">📦 Nuevo pedido</div>' +
+        '<div style="font-weight:800;font-size:0.95rem;margin-bottom:3px">' + order.empresa + rutaBadge + '</div>' +
+        '<div style="font-size:0.75rem;color:rgba(255,255,255,.6);margin-bottom:6px">Para el <b style="color:white">' + dayLabel + '</b></div>' +
+        (prodSample ? '<div style="font-size:0.72rem;color:rgba(255,255,255,.5)">' + prodSample + '</div>' : '') +
+      '</div>' +
+      '<button onclick="this.parentElement.parentElement.remove()" style="background:rgba(255,255,255,.1);border:none;color:white;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:0.9rem;flex-shrink:0;padding:0">×</button>' +
+    '</div>';
+
+  // Auto-dismiss after 6 seconds
+  document.body.appendChild(banner);
+  var timer = setTimeout(function() {
+    if (banner.parentElement) {
+      banner.style.animation = 'fadeOut .3s ease forwards';
+      setTimeout(function() { if (banner.parentElement) banner.remove(); }, 300);
+    }
+  }, 6000);
+
+  banner.onclick = function(e) {
+    if (e.target.tagName === 'BUTTON') return;
+    clearTimeout(timer);
+    banner.remove();
+    // Go to panel and scroll to that day
+    switchTab('panel');
+  };
+
+  // Stack multiple banners
+  var existing = document.querySelectorAll('[data-order-banner]');
+  banner.dataset.orderBanner = '1';
+  if (existing.length > 0) {
+    banner.style.top = (20 + existing.length * 100) + 'px';
+  }
+}
 
 function playNewOrderSound() {
   if (!soundEnabled) return;

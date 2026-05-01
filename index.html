@@ -698,13 +698,13 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
     </div>
     <div class="section-card">
       <div class="section-title"><span class="icon">📅</span>Día de entrega</div>
-      <div class="days-grid">
-        <button class="day-pill" data-day="LUN" onclick="selDay(this)">LUN</button>
-        <button class="day-pill" data-day="MAR" onclick="selDay(this)">MAR</button>
-        <button class="day-pill" data-day="MIE" onclick="selDay(this)">MIÉ</button>
-        <button class="day-pill" data-day="JUE" onclick="selDay(this)">JUE</button>
-        <button class="day-pill" data-day="VIE" onclick="selDay(this)">VIE</button>
+      <!-- Week navigator for form -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <button onclick="formWeekOffset(-1)" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:1rem;color:var(--muted)">‹</button>
+        <div id="form-week-label" style="flex:1;text-align:center;font-size:0.78rem;font-weight:700;color:var(--muted)"></div>
+        <button onclick="formWeekOffset(1)" style="padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:1rem;color:var(--muted)">›</button>
       </div>
+      <div class="days-grid" id="form-days-grid"></div>
     </div>
     <div class="section-card">
       <div class="incidencia-toggle" id="inc-toggle" onclick="toggleInc()">
@@ -729,17 +729,27 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
 <!-- PANEL VIEW -->
 <div class="view" id="view-panel">
   <div class="panel-wrap">
-    <div id="panel-summary" style="display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:12px;box-shadow:var(--shadow)">
-      <div>
-        <div id="summary-week" style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px"></div>
+    <div id="panel-summary" style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:12px;box-shadow:var(--shadow)">
+      <!-- Week navigator bar -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <button onclick="panelWeekOffset(-1)" style="width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:1.1rem;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0">‹</button>
+        <div style="flex:1;text-align:center">
+          <div id="week-nav-label" style="font-size:0.95rem;font-weight:800;color:var(--text)"></div>
+          <div id="week-nav-dates" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+        </div>
+        <button onclick="panelWeekOffset(1)" style="width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:1.1rem;color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0">›</button>
+        <button onclick="panelWeekOffset(0)" style="padding:6px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-size:0.72rem;font-weight:800;color:var(--muted);flex-shrink:0">HOY</button>
+      </div>
+      <!-- Stats -->
+      <div style="display:flex;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:baseline;gap:8px">
           <span id="summary-count" style="font-size:2rem;font-weight:800;color:var(--orange);line-height:1">0</span>
           <span style="font-size:0.85rem;font-weight:600;color:var(--muted)">pedidos pendientes</span>
         </div>
-      </div>
-      <div style="text-align:right">
-        <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
-        <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+        <div style="text-align:right">
+          <div id="summary-today" style="font-size:0.78rem;font-weight:700;color:var(--text)"></div>
+          <div id="summary-next" style="font-size:0.72rem;color:var(--muted);margin-top:2px"></div>
+        </div>
       </div>
     </div>
     <div class="panel-search-bar">
@@ -839,6 +849,98 @@ const DAY_LABELS = { LUN:'Lunes', MAR:'Martes', MIE:'Miércoles', JUE:'Jueves', 
 let selectedDay = null;
 let selectedLocalidad = null;
 let activeRutaFilter = 'ALL';
+let formWeekDelta = 0;   // 0=this week, 1=next week, -1=prev week
+let panelWeekDelta = 0;  // same for panel
+let selectedDate = null; // full date string 'YYYY-MM-DD'
+
+function getWeekDates(weekDelta) {
+  // Returns Mon-Fri dates for the given week offset
+  var today = new Date();
+  var dow = today.getDay(); // 0=Sun, 1=Mon...
+  var mondayOffset = dow === 0 ? -6 : 1 - dow;
+  var monday = new Date(today);
+  monday.setDate(today.getDate() + mondayOffset + weekDelta * 7);
+  var dates = [];
+  var dayKeys = ['LUN','MAR','MIE','JUE','VIE'];
+  for (var i = 0; i < 5; i++) {
+    var d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push({
+      key: dayKeys[i],
+      date: d,
+      iso: d.toISOString().slice(0,10),
+      label: dayKeys[i],
+      dateLabel: d.getDate() + '/' + (d.getMonth()+1)
+    });
+  }
+  return dates;
+}
+
+function getWeekLabel(weekDelta) {
+  var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var dates = getWeekDates(weekDelta);
+  var first = dates[0].date;
+  var last = dates[4].date;
+  if (weekDelta === 0) return 'Esta semana (' + first.getDate() + '-' + last.getDate() + ' ' + months[last.getMonth()] + ')';
+  if (weekDelta === 1) return 'Próxima semana (' + first.getDate() + '-' + last.getDate() + ' ' + months[last.getMonth()] + ')';
+  if (weekDelta === -1) return 'Semana pasada (' + first.getDate() + '-' + last.getDate() + ' ' + months[last.getMonth()] + ')';
+  return 'Semana ' + (weekDelta > 0 ? '+' : '') + weekDelta + ' (' + first.getDate() + '-' + last.getDate() + ' ' + months[last.getMonth()] + ')';
+}
+
+function renderFormDays() {
+  var dates = getWeekDates(formWeekDelta);
+  var label = document.getElementById('form-week-label');
+  if (label) label.textContent = getWeekLabel(formWeekDelta);
+  var grid = document.getElementById('form-days-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  var today = new Date().toISOString().slice(0,10);
+  dates.forEach(function(d) {
+    var btn = document.createElement('button');
+    btn.className = 'day-pill';
+    btn.dataset.day = d.key;
+    btn.dataset.iso = d.iso;
+    var isPast = d.iso < today;
+    var isToday = d.iso === today;
+    btn.innerHTML = '<div style="font-size:0.7rem;font-weight:800">' + d.label + '</div>' +
+      '<div style="font-size:0.75rem;font-weight:600;margin-top:2px;color:' + (isToday?'var(--orange)':isPast?'#D1D5DB':'inherit') + '">' + d.dateLabel + '</div>';
+    if (isPast) btn.style.opacity = '0.45';
+    if (isToday) btn.style.borderColor = 'var(--orange)';
+    // Restore selected state
+    if (selectedDate === d.iso) {
+      btn.style.background = 'var(--orange)';
+      btn.style.borderColor = 'var(--orange)';
+      btn.style.color = 'white';
+    }
+    (function(btn, d) {
+      btn.onclick = function() {
+        // Reset all pills
+        document.querySelectorAll('#form-days-grid .day-pill').forEach(function(b) {
+          b.style.background = '';
+          b.style.borderColor = '';
+          b.style.color = '';
+          b.querySelector && b.querySelector('div:last-child') && 
+            (b.querySelector('div:last-child').style.color = '');
+        });
+        // Highlight selected
+        btn.style.background = 'var(--orange)';
+        btn.style.borderColor = 'var(--orange)';
+        btn.style.color = 'white';
+        selectedDay = d.key;
+        selectedDate = d.iso;
+      };
+    })(btn, d);
+    grid.appendChild(btn);
+  });
+}
+
+function formWeekOffset(dir) {
+  formWeekDelta += dir;
+  selectedDay = null;
+  selectedDate = null;
+  renderFormDays();
+  updatePanelWeekNav();
+}
 let useFirebase = false;
 let allOrders = {};
 let activeDayFilter = 'ALL'; // AUTO = next working day, ALL = full week, or specific day
@@ -987,7 +1089,9 @@ function switchTab(tab) {
   const btn = document.getElementById('tab-' + tab);
   if (view) view.classList.add('active');
   if (btn) btn.classList.add('active');
-  if (tab === 'panel') renderPanel(document.getElementById('panel-search').value || '');
+  if (tab === 'form') { formWeekDelta = 0; renderFormDays(); }
+  if (tab === 'panel') { updatePanelWeekNav(); renderPanel(document.getElementById('panel-search').value || ''); }
+  if (tab === 'inventario') renderInventario(document.getElementById('inv-search').value || '');
   if (tab === 'historial') renderHistorial(document.getElementById('hist-search').value || '');
   if (tab === 'inventario') renderInventario(document.getElementById('inv-search').value || '');
 }
@@ -1463,6 +1567,7 @@ async function submitOrder() {
     incidencias,
     notas,
     day: selectedDay,
+    isoDate: selectedDate || new Date().toISOString().slice(0,10),
     localidad: localidad || '',
     done: false,
     ts: new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}),
@@ -1521,10 +1626,14 @@ async function submitOrder() {
   // Reset form
   document.getElementById('f-empresa').value = '';
   document.getElementById('f-notas').value = '';
-  // Reset localidad
+  // Reset localidad and week
   document.querySelectorAll('.loc-pill').forEach(function(b) { b.classList.remove('active'); });
   document.getElementById('loc-custom').style.display = 'none';
   selectedLocalidad = null;
+  formWeekDelta = 0;
+  selectedDate = null;
+  renderFormDays();
+  updatePanelWeekNav();
   // Remove all lote selectors
   document.querySelectorAll('.lote-selector').forEach(el => el.remove());
   document.getElementById('products-list').innerHTML = '';
@@ -1594,12 +1703,27 @@ function renderPanel(filter = '') {
   const orders = Object.entries(allOrders).map(([id, o]) => ({...o, id}));
   const q = filter.toLowerCase();
 
-  // Sort by id desc (newest first)
-  orders.sort((a,b) => (b.id||'').localeCompare(a.id||''));
+  // Sort: by isoDate first (nearest first), then by id
+  orders.sort((a,b) => {
+    var da = a.isoDate || '0000-00-00';
+    var db = b.isoDate || '0000-00-00';
+    if (da !== db) return da.localeCompare(db);
+    return (b.id||'').localeCompare(a.id||'');
+  });
 
+  var weekIsos = getWeekIsos(panelWeekDelta);
   const pending = orders.filter(o => {
     if (o.done) return false;
     if (!matchesFilter(o, q)) return false;
+    // Week filter: show orders for the selected week
+    var weekIsos = getWeekIsos(panelWeekDelta);
+    if (o.isoDate) {
+      // Orders with exact date: filter by week
+      if (!weekIsos.includes(o.isoDate)) return false;
+    } else {
+      // Legacy orders without isoDate: only show in current week
+      if (panelWeekDelta !== 0) return false;
+    }
     // Ruta filter
     if (activeRutaFilter !== 'ALL') {
       if (activeRutaFilter === 'SIN') {
@@ -1625,9 +1749,17 @@ function renderPanel(filter = '') {
 
     const dayOrders = pending.filter(o => o.day === day);
 
+    // Get the date for this day in current/next week from orders
+    var dayDate = '';
+    var ordWithDate = dayOrders.find(function(o) { return o.isoDate; });
+    if (ordWithDate) {
+      var d2 = new Date(ordWithDate.isoDate + 'T12:00:00');
+      dayDate = ' <span style="font-size:0.7rem;font-weight:600;color:var(--muted)">' + d2.getDate() + '/' + (d2.getMonth()+1) + '</span>';
+    }
+
     col.innerHTML = `
       <div class="day-col-header">
-        <h3>${DAY_LABELS[day]}</h3>
+        <h3>${DAY_LABELS[day]}${dayDate}</h3>
         <span class="day-count-badge">${dayOrders.length}</span>
       </div>
     `;
@@ -1813,7 +1945,7 @@ function buildCard(order, day) {
       <div class="oc-header">
         <div>
           <div class="oc-empresa">${order.empresa}${order.localidad ? `<span style="font-size:0.62rem;font-weight:800;padding:2px 7px;border-radius:99px;background:${'Sevilla'===order.localidad?'#EDE9FE':'Cádiz'===order.localidad?'#D1FAE5':'#F3F4F6'};color:${'Sevilla'===order.localidad?'#6366F1':'Cádiz'===order.localidad?'#059669':'#6B7280'};margin-left:6px">${order.localidad}</span>` : ''}</div>
-          <div class="oc-time">${order.date} · ${order.ts}</div>
+          <div class="oc-time">${formatOrderDate(order)}${order.ts ? ' · ' + order.ts : ''}</div>
         </div>
       </div>
       ${incBadge}
@@ -2972,6 +3104,16 @@ function showNewOrderBanner(order) {
   }
 }
 
+function formatOrderDate(order) {
+  if (order.isoDate) {
+    var d = new Date(order.isoDate + 'T12:00:00');
+    var days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+  }
+  return order.date || '';
+}
+
 function playNewOrderSound() {
   if (!soundEnabled) return;
   try {
@@ -3036,9 +3178,62 @@ function getVisibleDays() {
 
 function setDayFilter(btn) {
   activeDayFilter = btn.dataset.day;
-  document.querySelectorAll('.day-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('[data-day].day-filter-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   renderPanel(document.getElementById('panel-search').value || '');
+}
+
+function panelWeekOffset(dir) {
+  if (dir === 0) {
+    panelWeekDelta = 0;
+  } else {
+    panelWeekDelta += dir;
+  }
+  updatePanelWeekNav();
+  renderPanel(document.getElementById('panel-search').value || '');
+}
+
+function updatePanelWeekNav() {
+  var dates = getWeekDates(panelWeekDelta);
+  var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var first = dates[0].date;
+  var last = dates[4].date;
+
+  // Week label
+  var labelEl = document.getElementById('week-nav-label');
+  if (labelEl) {
+    if (panelWeekDelta === 0) labelEl.textContent = 'Esta semana';
+    else if (panelWeekDelta === 1) labelEl.textContent = 'Próxima semana';
+    else if (panelWeekDelta === -1) labelEl.textContent = 'Semana pasada';
+    else labelEl.textContent = 'Semana ' + (panelWeekDelta > 0 ? '+' : '') + panelWeekDelta;
+  }
+
+  // Date range
+  var datesEl = document.getElementById('week-nav-dates');
+  if (datesEl) {
+    var sameMonth = first.getMonth() === last.getMonth();
+    if (sameMonth) {
+      datesEl.textContent = first.getDate() + ' – ' + last.getDate() + ' de ' + months[first.getMonth()];
+    } else {
+      datesEl.textContent = first.getDate() + ' ' + months[first.getMonth()] + ' – ' + last.getDate() + ' ' + months[last.getMonth()];
+    }
+  }
+
+  // HOY button highlight
+  var hoyBtn = document.querySelector('[onclick="panelWeekOffset(0)"]');
+  if (hoyBtn) {
+    hoyBtn.style.borderColor = panelWeekDelta === 0 ? 'var(--orange)' : '';
+    hoyBtn.style.color = panelWeekDelta === 0 ? 'var(--orange)' : '';
+    hoyBtn.style.fontWeight = panelWeekDelta === 0 ? '900' : '800';
+  }
+
+  // Also update summary-week label (legacy)
+  var sw = document.getElementById('summary-week');
+  if (sw) sw.textContent = '';
+}
+
+function getWeekIsos(weekDelta) {
+  return getWeekDates(weekDelta).map(function(d) { return d.iso; });
 }
 
 function filterPanel(val) { renderPanel(val); }
@@ -3383,6 +3578,8 @@ function bootApp() {
   addProductLine();
   document.getElementById('firebase-modal').classList.add('hidden');
   loadTheme();
+  renderFormDays();
+  updatePanelWeekNav();
   startApp();
   initLogin();
 }
